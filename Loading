@@ -30,7 +30,7 @@ local background = Instance.new("Frame", gui)
 background.Size = UDim2.new(1, 0, 1, 0)
 background.Position = UDim2.new(0, 0, 0, 0)
 background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-background.BackgroundTransparency = 0.3 -- Slightly transparent for a sleek effect
+background.BackgroundTransparency = 0 -- Fully opaque black
 background.ZIndex = 0 -- Ensure it's behind other UI elements
 background.BorderSizePixel = 0
 
