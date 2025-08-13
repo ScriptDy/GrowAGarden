@@ -6,17 +6,16 @@ local RunService = game:GetService("RunService")
 
 -- Helper function to style bold text
 local function styleBoldText(label, text)
-    label.Text = text
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextScaled = true
-    label.Font = Enum.Font.SourceSansBold
-    label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.TextScaled = true
+	label.Font = Enum.Font.SourceSansBold
+	label.BackgroundTransparency = 1
 
-    -- Add stroke for extra bold effect
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = 2
-    stroke.Color = Color3.fromRGB(0, 0, 0) -- Black outline
-    stroke.Parent = label
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 2
+	stroke.Color = Color3.fromRGB(0, 0, 0) 
+	stroke.Parent = label
 end
 
 -- Create ScreenGui
@@ -69,42 +68,46 @@ generatingLabel.Position = UDim2.new(0.25, 0, 0.5, 10)
 generatingLabel.Parent = frame
 styleBoldText(generatingLabel, "GENERATING...")
 
--- Disable Roblox core GUI
+-- Hide Roblox UI during loading
+StarterGui:SetCore("TopbarEnabled", false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
--- Block Esc key
-local function blockEscKey(input, gameProcessedEvent)
-    if input.KeyCode == Enum.KeyCode.Escape and not gameProcessedEvent then
-        return
-    end
-end
-UserInputService.InputBegan:Connect(blockEscKey)
+-- Block mouse/touch input outside the loading screen
+UserInputService.InputBegan:Connect(function(input, gp)
+	if gp then return end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		-- Clicking anywhere else won't do anything
+	end
+end)
 
 -- Progress update
 local totalTime = 120
 local currentTime = 0
 local function updateProgress()
-    while currentTime < totalTime and frame.Parent do
-        currentTime = currentTime + RunService.Heartbeat:Wait()
-        local progress = math.min(currentTime / totalTime, 1)
-        progressFill.Size = UDim2.new(progress, 0, 1, 0)
-        percentLabel.Text = "Loading: " .. math.floor(progress * 100) .. "%"
-        wait(0.1)
-    end
+	while currentTime < totalTime and frame.Parent do
+		currentTime = currentTime + RunService.Heartbeat:Wait()
+		local progress = math.min(currentTime / totalTime, 1)
+		progressFill.Size = UDim2.new(progress, 0, 1, 0)
+		percentLabel.Text = "Loading: " .. math.floor(progress * 100) .. "%"
+		wait(0.1)
+	end
 end
 
 -- Fade out
 local function fadeOut()
-    StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
-    local tween = TweenService:Create(frame, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {BackgroundTransparency = 1})
-    tween:Play()
-    for _, child in pairs(frame:GetChildren()) do
-        if child:IsA("GuiObject") then
-            TweenService:Create(child, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {TextTransparency = 1}):Play()
-        end
-    end
-    tween.Completed:Wait()
-    screenGui:Destroy()
+	-- Re-enable Roblox UI
+	StarterGui:SetCore("TopbarEnabled", true)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
+
+	local tween = TweenService:Create(frame, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {BackgroundTransparency = 1})
+	tween:Play()
+	for _, child in pairs(frame:GetChildren()) do
+		if child:IsA("GuiObject") then
+			TweenService:Create(child, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {TextTransparency = 1}):Play()
+		end
+	end
+	tween.Completed:Wait()
+	screenGui:Destroy()
 end
 
 -- Start
