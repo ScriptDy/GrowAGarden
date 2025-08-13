@@ -4,42 +4,49 @@ local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
+-- Helper function to style bold text
+local function styleBoldText(label, text)
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextScaled = true
+    label.Font = Enum.Font.SourceSansBold
+    label.BackgroundTransparency = 1
+
+    -- Add stroke for extra bold effect
+    local stroke = Instance.new("UIStroke")
+    stroke.Thickness = 2
+    stroke.Color = Color3.fromRGB(0, 0, 0) -- Black outline
+    stroke.Parent = label
+end
+
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "LoadingScreen"
-screenGui.IgnoreGuiInset = true -- Cover the entire screen
+screenGui.IgnoreGuiInset = true
 screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Create main frame (full black background)
+-- Main frame
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(1, 0, 1, 0)
-frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Solid black
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BackgroundTransparency = 0
 frame.Parent = screenGui
 
--- Create "Pet Spawner" text (same style as percentage text)
+-- "Pet Spawner" text
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
-titleLabel.Position = UDim2.new(0.25, 0, 0.3, -40) -- Above percentage text
-titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "Pet Spawner"
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.TextScaled = true
-titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.Position = UDim2.new(0.25, 0, 0.3, -20)
 titleLabel.Parent = frame
+styleBoldText(titleLabel, "Pet Spawner")
 
--- Create percentage text (e.g., "Loading: 20%")
+-- Percentage text
 local percentLabel = Instance.new("TextLabel")
 percentLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
 percentLabel.Position = UDim2.new(0.25, 0, 0.4, -20)
-percentLabel.BackgroundTransparency = 1
-percentLabel.Text = "Loading: 0%"
-percentLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-percentLabel.TextScaled = true
-percentLabel.Font = Enum.Font.SourceSansBold
 percentLabel.Parent = frame
+styleBoldText(percentLabel, "Loading: 0%")
 
--- Create progress bar background
+-- Progress bar background
 local progressBackground = Instance.new("Frame")
 progressBackground.Size = UDim2.new(0.6, 0, 0.05, 0)
 progressBackground.Position = UDim2.new(0.2, 0, 0.45, 0)
@@ -47,68 +54,60 @@ progressBackground.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 progressBackground.BorderSizePixel = 0
 progressBackground.Parent = frame
 
--- Create progress bar fill
+-- Progress bar fill
 local progressFill = Instance.new("Frame")
-progressFill.Size = UDim2.new(0, 0, 1, 0) -- Starts at 0 width
+progressFill.Size = UDim2.new(0, 0, 1, 0)
 progressFill.Position = UDim2.new(0, 0, 0, 0)
-progressFill.BackgroundColor3 = Color3.fromRGB(255, 165, 0) -- Orange
+progressFill.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
 progressFill.BorderSizePixel = 0
 progressFill.Parent = progressBackground
 
--- Create "GENERATING..." text
+-- "GENERATING..." text
 local generatingLabel = Instance.new("TextLabel")
 generatingLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
 generatingLabel.Position = UDim2.new(0.25, 0, 0.5, 10)
-generatingLabel.BackgroundTransparency = 1
-generatingLabel.Text = "GENERATING..."
-generatingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-generatingLabel.TextScaled = true
-generatingLabel.Font = Enum.Font.SourceSansBold
 generatingLabel.Parent = frame
+styleBoldText(generatingLabel, "GENERATING...")
 
--- Disable Roblox core GUI (top bar and menu)
+-- Disable Roblox core GUI
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
--- Block Esc key to prevent opening the Roblox menu
+-- Block Esc key
 local function blockEscKey(input, gameProcessedEvent)
-	if input.KeyCode == Enum.KeyCode.Escape and not gameProcessedEvent then
-		return -- Prevent default Esc behavior
-	end
+    if input.KeyCode == Enum.KeyCode.Escape and not gameProcessedEvent then
+        return
+    end
 end
 UserInputService.InputBegan:Connect(blockEscKey)
 
--- Simulate loading progress over 5 minutes (300 seconds)
-local totalTime = 300
+-- Progress update
+local totalTime = 120
 local currentTime = 0
 local function updateProgress()
-	while currentTime < totalTime and frame.Parent do
-		currentTime = currentTime + RunService.Heartbeat:Wait()
-		local progress = math.min(currentTime / totalTime, 1)
-		progressFill.Size = UDim2.new(progress, 0, 1, 0)
-		percentLabel.Text = "Loading: " .. math.floor(progress * 100) .. "%"
-		wait(0.1) -- Update every 0.1 seconds for smooth animation
-	end
+    while currentTime < totalTime and frame.Parent do
+        currentTime = currentTime + RunService.Heartbeat:Wait()
+        local progress = math.min(currentTime / totalTime, 1)
+        progressFill.Size = UDim2.new(progress, 0, 1, 0)
+        percentLabel.Text = "Loading: " .. math.floor(progress * 100) .. "%"
+        wait(0.1)
+    end
 end
 
--- Fade out loading screen and restore core GUI
+-- Fade out
 local function fadeOut()
-	-- Re-enable core GUI before fading out
-	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
-	
-	local tween = TweenService:Create(frame, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {BackgroundTransparency = 1})
-	tween:Play()
-	for _, child in pairs(frame:GetChildren()) do
-		if child:IsA("GuiObject") then
-			TweenService:Create(child, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {TextTransparency = 1}):Play()
-		end
-	end
-	tween.Completed:Wait()
-	screenGui:Destroy()
+    StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
+    local tween = TweenService:Create(frame, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {BackgroundTransparency = 1})
+    tween:Play()
+    for _, child in pairs(frame:GetChildren()) do
+        if child:IsA("GuiObject") then
+            TweenService:Create(child, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {TextTransparency = 1}):Play()
+        end
+    end
+    tween.Completed:Wait()
+    screenGui:Destroy()
 end
 
--- Start progress update
+-- Start
 spawn(updateProgress)
-
--- Wait for 5 minutes and then fade out
-wait(120)
+wait(totalTime)
 fadeOut()
