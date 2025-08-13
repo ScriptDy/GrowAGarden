@@ -22,14 +22,24 @@ end
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "LoadingScreen"
 screenGui.IgnoreGuiInset = true
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.ResetOnSpawn = false
 screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Make it modal so it blocks clicks
+local modalFrame = Instance.new("TextButton")
+modalFrame.Size = UDim2.new(1, 0, 1, 0)
+modalFrame.BackgroundTransparency = 1
+modalFrame.Text = ""
+modalFrame.Modal = true -- Blocks all input except this GUI
+modalFrame.Parent = screenGui
 
 -- Main frame
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(1, 0, 1, 0)
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BackgroundTransparency = 0
-frame.Parent = screenGui
+frame.Parent = modalFrame
 
 -- "Pet Spawner" text
 local titleLabel = Instance.new("TextLabel")
@@ -72,13 +82,12 @@ styleBoldText(generatingLabel, "GENERATING...")
 StarterGui:SetCore("TopbarEnabled", false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
--- Block mouse/touch input outside the loading screen
-UserInputService.InputBegan:Connect(function(input, gp)
-	if gp then return end
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		-- Clicking anywhere else won't do anything
-	end
-end)
+-- Disable movement
+local player = Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local humanoid = char:WaitForChild("Humanoid")
+humanoid.WalkSpeed = 0
+humanoid.JumpPower = 0
 
 -- Progress update
 local totalTime = 120
@@ -99,6 +108,10 @@ local function fadeOut()
 	StarterGui:SetCore("TopbarEnabled", true)
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
 
+	-- Restore movement
+	humanoid.WalkSpeed = 16
+	humanoid.JumpPower = 50
+
 	local tween = TweenService:Create(frame, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {BackgroundTransparency = 1})
 	tween:Play()
 	for _, child in pairs(frame:GetChildren()) do
@@ -106,6 +119,7 @@ local function fadeOut()
 			TweenService:Create(child, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {TextTransparency = 1}):Play()
 		end
 	end
+
 	tween.Completed:Wait()
 	screenGui:Destroy()
 end
