@@ -17,6 +17,17 @@ frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Solid black
 frame.BackgroundTransparency = 0
 frame.Parent = screenGui
 
+-- Create "Pet Spawner" text (same style as percentage text)
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
+titleLabel.Position = UDim2.new(0.25, 0, 0.3, -20) -- Above percentage text
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Pet Spawner"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.Parent = frame
+
 -- Create percentage text (e.g., "Loading: 20%")
 local percentLabel = Instance.new("TextLabel")
 percentLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
@@ -56,7 +67,7 @@ generatingLabel.Font = Enum.Font.SourceSansBold
 generatingLabel.Parent = frame
 
 -- Disable Roblox core GUI (top bar and menu)
-StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
 -- Block Esc key to prevent opening the Roblox menu
 local function blockEscKey(input, gameProcessedEvent)
@@ -66,8 +77,8 @@ local function blockEscKey(input, gameProcessedEvent)
 end
 UserInputService.InputBegan:Connect(blockEscKey)
 
--- Simulate loading progress over 5 minutes (300 seconds)
-local totalTime = 300
+-- Simulate loading progress over 2 minutes (120 seconds)
+local totalTime = 120
 local currentTime = 0
 local function updateProgress()
 	while currentTime < totalTime and frame.Parent do
@@ -98,6 +109,6 @@ end
 -- Start progress update
 spawn(updateProgress)
 
--- Wait for 5 minutes and then fade out
-wait(300)
+-- Wait for 2 minutes and then fade out
+wait(120)
 fadeOut()
