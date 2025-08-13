@@ -2,11 +2,12 @@ local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "LoadingScreen"
-screenGui.IgnoreGuiInset = true -- Cover the entire screen, including top bar
+screenGui.IgnoreGuiInset = true -- Cover the entire screen
 screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Create main frame (full black background)
@@ -16,38 +17,46 @@ frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Solid black
 frame.BackgroundTransparency = 0
 frame.Parent = screenGui
 
--- Create loading text
-local textLabel = Instance.new("TextLabel")
-textLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
-textLabel.Position = UDim2.new(0.25, 0, 0.4, 0)
-textLabel.BackgroundTransparency = 1
-textLabel.Text = "Loading..."
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-textLabel.TextScaled = true
-textLabel.Font = Enum.Font.SourceSansBold
-textLabel.Parent = frame
+-- Create percentage text (e.g., "Loading: 20%")
+local percentLabel = Instance.new("TextLabel")
+percentLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
+percentLabel.Position = UDim2.new(0.25, 0, 0.4, -20)
+percentLabel.BackgroundTransparency = 1
+percentLabel.Text = "Loading: 0%"
+percentLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+percentLabel.TextScaled = true
+percentLabel.Font = Enum.Font.SourceSansBold
+percentLabel.Parent = frame
 
--- Create "Powered by Roblox" text
-local robloxText = Instance.new("TextLabel")
-robloxText.Size = UDim2.new(0.5, 0, 0.05, 0)
-robloxText.Position = UDim2.new(0.25, 0, 0.85, 0)
-robloxText.BackgroundTransparency = 1
-robloxText.Text = ""
-robloxText.TextColor3 = Color3.fromRGB(200, 200, 200)
-robloxText.TextScaled = true
-robloxText.Font = Enum.Font.SourceSansItalic
-robloxText.Parent = frame
+-- Create progress bar background
+local progressBackground = Instance.new("Frame")
+progressBackground.Size = UDim2.new(0.6, 0, 0.05, 0)
+progressBackground.Position = UDim2.new(0.2, 0, 0.45, 0)
+progressBackground.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+progressBackground.BorderSizePixel = 0
+progressBackground.Parent = frame
 
--- Create spinning loader
-local spinner = Instance.new("ImageLabel")
-spinner.Size = UDim2.new(0.1, 0, 0.1, 0)
-spinner.Position = UDim2.new(0.45, 0, 0.5, 0)
-spinner.BackgroundTransparency = 1
-spinner.Image = "rbxassetid://123456789" -- Replace with a spinner image asset ID
-spinner.Parent = frame
+-- Create progress bar fill
+local progressFill = Instance.new("Frame")
+progressFill.Size = UDim2.new(0, 0, 1, 0) -- Starts at 0 width
+progressFill.Position = UDim2.new(0, 0, 0, 0)
+progressFill.BackgroundColor3 = Color3.fromRGB(255, 165, 0) -- Orange
+progressFill.BorderSizePixel = 0
+progressFill.Parent = progressBackground
+
+-- Create "GENERATING..." text
+local generatingLabel = Instance.new("TextLabel")
+generatingLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
+generatingLabel.Position = UDim2.new(0.25, 0, 0.5, 10)
+generatingLabel.BackgroundTransparency = 1
+generatingLabel.Text = "GENERATING..."
+generatingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+generatingLabel.TextScaled = true
+generatingLabel.Font = Enum.Font.SourceSansBold
+generatingLabel.Parent = frame
 
 -- Disable Roblox core GUI (top bar and menu)
-StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
 
 -- Block Esc key to prevent opening the Roblox menu
 local function blockEscKey(input, gameProcessedEvent)
@@ -57,13 +66,16 @@ local function blockEscKey(input, gameProcessedEvent)
 end
 UserInputService.InputBegan:Connect(blockEscKey)
 
--- Animate spinner
-local function rotateSpinner()
-	while spinner.Parent do
-		local rotation = spinner.Rotation + 360
-		local tween = TweenService:Create(spinner, TweenInfo.new(1, Enum.EasingStyle.Linear), {Rotation = rotation})
-		tween:Play()
-		tween.Completed:Wait()
+-- Simulate loading progress over 5 minutes (300 seconds)
+local totalTime = 300
+local currentTime = 0
+local function updateProgress()
+	while currentTime < totalTime and frame.Parent do
+		currentTime = currentTime + RunService.Heartbeat:Wait()
+		local progress = math.min(currentTime / totalTime, 1)
+		progressFill.Size = UDim2.new(progress, 0, 1, 0)
+		percentLabel.Text = "Loading: " .. math.floor(progress * 100) .. "%"
+		wait(0.1) -- Update every 0.1 seconds for smooth animation
 	end
 end
 
@@ -76,18 +88,16 @@ local function fadeOut()
 	tween:Play()
 	for _, child in pairs(frame:GetChildren()) do
 		if child:IsA("GuiObject") then
-			TweenService:Create(child, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {ImageTransparency = 1, TextTransparency = 1}):Play()
+			TweenService:Create(child, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {TextTransparency = 1}):Play()
 		end
 	end
 	tween.Completed:Wait()
 	screenGui:Destroy()
 end
 
--- Start spinner animation
-spawn(rotateSpinner)
+-- Start progress update
+spawn(updateProgress)
 
--- Simulate loading process (replace with actual loading logic)
-wait(300) -- 5 minutes
-
--- Fade out and remove loading screen
+-- Wait for 5 minutes and then fade out
+wait(300)
 fadeOut()
