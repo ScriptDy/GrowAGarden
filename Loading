@@ -1,57 +1,58 @@
+-- LocalScript in StarterPlayerScripts
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "LoadingScreen"
-screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
-screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true -- Makes it cover the entire screen, including Roblox's top bar
+screenGui.ResetOnSpawn = false -- Persists through player respawn
+screenGui.Parent = PlayerGui
 
--- Create Frame for background
+-- Create full-screen black Frame
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(1, 0, 1, 0)
-frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-frame.BackgroundTransparency = 0
+frame.Size = UDim2.new(1, 0, 1, 0) -- Full screen
+frame.Position = UDim2.new(0, 0, 0, 0)
+frame.BackgroundColor3 = Color3.new(0, 0, 0) -- Black
+frame.BackgroundTransparency = 0 -- Fully opaque
+frame.Active = true -- Blocks interactions with other GUI elements
+frame.Visible = false -- Hidden by default
 frame.Parent = screenGui
 
--- Create TextLabel for loading text
+-- Optional: Add a loading text
 local textLabel = Instance.new("TextLabel")
-textLabel.Size = UDim2.new(0.5, 0, 0.2, 0)
-textLabel.Position = UDim2.new(0.25, 0, 0.4, 0)
+textLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
+textLabel.Position = UDim2.new(0.25, 0, 0.45, 0)
 textLabel.BackgroundTransparency = 1
 textLabel.Text = "Loading..."
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
 textLabel.TextScaled = true
 textLabel.Font = Enum.Font.SourceSansBold
 textLabel.Parent = frame
 
--- Optional: Create a simple spinning loader
-local spinner = Instance.new("ImageLabel")
-spinner.Size = UDim2.new(0.1, 0, 0.1, 0)
-spinner.Position = UDim2.new(0.45, 0, 0.6, 0)
-spinner.BackgroundTransparency = 1
-spinner.Image = "rbxassetid://1234567890" -- Replace with a spinner image asset ID
-spinner.Parent = frame
-
--- Tween for spinner rotation
-local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1)
-local tween = TweenService:Create(spinner, tweenInfo, {Rotation = 360})
-tween:Play()
-
--- Fade out function
-local function fadeOut()
-	local fadeInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In)
-	local fadeTween = TweenService:Create(frame, fadeInfo, {BackgroundTransparency = 1})
-	fadeTween:Play()
-	for _, child in pairs(frame:GetChildren()) do
-		if child:IsA("GuiObject") then
-			TweenService:Create(child, fadeInfo, {BackgroundTransparency = 1, TextTransparency = 1, ImageTransparency = 1}):Play()
-		end
-	end
-	wait(1)
-	screenGui:Destroy()
+-- Function to show loading screen
+local function showLoadingScreen()
+    frame.Visible = true
 end
 
--- Show loading screen for 5 minutes, then fade out
-wait(300)
-fadeOut()
+-- Function to hide loading screen
+local function hideLoadingScreen()
+    frame.Visible = false
+end
+
+-- Example: Trigger the loading screen (replace with your script execution logic)
+local function executeScript()
+    showLoadingScreen()
+    -- Simulate some script execution (e.g., loading something)
+    wait(5) -- Replace with your actual script logic
+    hideLoadingScreen()
+end
+
+-- Example: Bind to some event to trigger the script (e.g., a RemoteEvent or a key press)
+local UserInputService = game:GetService("UserInputService")
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent and input.KeyCode == Enum.KeyCode.L then
+        executeScript()
+    end
+end)
