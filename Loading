@@ -89,6 +89,15 @@ local humanoid = char:WaitForChild("Humanoid")
 humanoid.WalkSpeed = 0
 humanoid.JumpPower = 0
 
+-- Allow escape key to disable modal and show Roblox menu
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+	if input.KeyCode == Enum.KeyCode.Escape and not gameProcessedEvent then
+		modalFrame.Modal = false
+		StarterGui:SetCore("TopbarEnabled", true)
+		StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
+	end
+end)
+
 -- Progress update
 local totalTime = 120
 local currentTime = 0
