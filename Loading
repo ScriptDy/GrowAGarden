@@ -1,139 +1,99 @@
+-- Services
 local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
 
--- Helper function to style bold text
-local function styleBoldText(label, text)
-	label.Text = text
-	label.TextColor3 = Color3.fromRGB(255, 255, 255)
-	label.TextScaled = true
-	label.Font = Enum.Font.SourceSansBold
-	label.BackgroundTransparency = 1
-
-	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 2
-	stroke.Color = Color3.fromRGB(0, 0, 0) 
-	stroke.Parent = label
-end
-
--- Create ScreenGui
+-- Create the ScreenGui
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "LoadingScreen"
-screenGui.IgnoreGuiInset = true
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.Name = "CustomLoadingScreen"
 screenGui.ResetOnSpawn = false
-screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = game:GetService("CoreGui")
 
--- Make it modal so it blocks clicks
-local modalFrame = Instance.new("TextButton")
-modalFrame.Size = UDim2.new(1, 0, 1, 0)
-modalFrame.BackgroundTransparency = 1
-modalFrame.Text = ""
-modalFrame.Modal = true -- Blocks all input except this GUI
-modalFrame.Parent = screenGui
+-- Full black background
+local background = Instance.new("Frame")
+background.Size = UDim2.new(1, 0, 1, 0)
+background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+background.BorderSizePixel = 0
+background.Parent = screenGui
 
--- Main frame
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(1, 0, 1, 0)
-frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-frame.BackgroundTransparency = 0
-frame.Parent = modalFrame
+-- Player avatar icon (top-left, slightly lowered)
+local avatarImage = Instance.new("ImageLabel")
+avatarImage.Size = UDim2.new(0, 80, 0, 80)
+avatarImage.Position = UDim2.new(0, 20, 0, 100) -- lowered Y from 20 to 100
+avatarImage.BackgroundTransparency = 1
+avatarImage.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
+avatarImage.Parent = background
 
--- "Pet Spawner" text
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
-titleLabel.Position = UDim2.new(0.25, 0, 0.3, -20)
-titleLabel.Parent = frame
-styleBoldText(titleLabel, "Pet Spawner")
+-- Top Title: RAYFIELD
+local rayfieldTitle = Instance.new("TextLabel")
+rayfieldTitle.Text = "RAYFIELD"
+rayfieldTitle.Size = UDim2.new(0, 400, 0, 50)
+rayfieldTitle.Position = UDim2.new(0.5, -200, 0.05, 0)
+rayfieldTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+rayfieldTitle.Font = Enum.Font.GothamBlack
+rayfieldTitle.TextSize = 36
+rayfieldTitle.BackgroundTransparency = 1
+rayfieldTitle.Parent = background
 
--- Percentage text
-local percentLabel = Instance.new("TextLabel")
-percentLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
-percentLabel.Position = UDim2.new(0.25, 0, 0.4, -20)
-percentLabel.Parent = frame
-styleBoldText(percentLabel, "Loading: 0%")
+-- Loading Label (increments of 5)
+local loadingLabel = Instance.new("TextLabel")
+loadingLabel.Text = "Loading: 0%"
+loadingLabel.Size = UDim2.new(0, 300, 0, 40)
+loadingLabel.Position = UDim2.new(0.5, -150, 0.12, 0)
+loadingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+loadingLabel.Font = Enum.Font.Gotham
+loadingLabel.TextSize = 24
+loadingLabel.BackgroundTransparency = 1
+loadingLabel.Parent = background
 
 -- Progress bar background
-local progressBackground = Instance.new("Frame")
-progressBackground.Size = UDim2.new(0.6, 0, 0.05, 0)
-progressBackground.Position = UDim2.new(0.2, 0, 0.45, 0)
-progressBackground.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-progressBackground.BorderSizePixel = 0
-progressBackground.Parent = frame
+local progressBarBackground = Instance.new("Frame")
+progressBarBackground.Size = UDim2.new(0, 400, 0, 25)
+progressBarBackground.Position = UDim2.new(0.5, -200, 0.45, 0)
+progressBarBackground.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+progressBarBackground.BorderSizePixel = 0
+progressBarBackground.Parent = background
 
--- Progress bar fill
-local progressFill = Instance.new("Frame")
-progressFill.Size = UDim2.new(0, 0, 1, 0)
-progressFill.Position = UDim2.new(0, 0, 0, 0)
-progressFill.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
-progressFill.BorderSizePixel = 0
-progressFill.Parent = progressBackground
+-- Rainbow progress bar (foreground)
+local progressBar = Instance.new("Frame")
+progressBar.Size = UDim2.new(0, 0, 1, 0)
+progressBar.Position = UDim2.new(0, 0, 0, 0)
+progressBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+progressBar.BorderSizePixel = 0
+progressBar.Parent = progressBarBackground
 
--- "GENERATING..." text
-local generatingLabel = Instance.new("TextLabel")
-generatingLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
-generatingLabel.Position = UDim2.new(0.25, 0, 0.5, 10)
-generatingLabel.Parent = frame
-styleBoldText(generatingLabel, "GENERATING...")
+-- Bottom text: Pet And Seed Spawner (larger)
+local descLabel = Instance.new("TextLabel")
+descLabel.Text = "Pet And Seed Spawner"
+descLabel.Size = UDim2.new(0, 600, 0, 60)
+descLabel.Position = UDim2.new(0.5, -300, 0.65, 0)
+descLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+descLabel.Font = Enum.Font.GothamBlack
+descLabel.TextSize = 28
+descLabel.BackgroundTransparency = 1
+descLabel.Parent = background
 
--- Hide Roblox UI during loading
-StarterGui:SetCore("TopbarEnabled", false)
-StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
+-- Rainbow color function
+local function getRainbowColor(t)
+	local r = math.sin(t) * 127 + 128
+	local g = math.sin(t + 2) * 127 + 128
+	local b = math.sin(t + 4) * 127 + 128
+	return Color3.fromRGB(r, g, b)
+end
 
--- Disable movement
-local player = Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local humanoid = char:WaitForChild("Humanoid")
-humanoid.WalkSpeed = 0
-humanoid.JumpPower = 0
+-- Animate loading: 5% every 4 seconds
+spawn(function()
+	for i = 0, 100, 5 do
+		loadingLabel.Text = "Loading: " .. i .. "%"
+		progressBar:TweenSize(UDim2.new(i / 100, 0, 1, 0), "Out", "Quad", 1, true)
+		progressBar.BackgroundColor3 = getRainbowColor(tick())
 
--- Allow escape key to disable modal and show Roblox menu
-UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-	if input.KeyCode == Enum.KeyCode.Escape and not gameProcessedEvent then
-		modalFrame.Modal = false
-		StarterGui:SetCore("TopbarEnabled", true)
-		StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
+		wait(4) -- 4 seconds per 5%
+	end
+
+	-- Freeze at 100%, rainbow keeps animating
+	while true do
+		progressBar.BackgroundColor3 = getRainbowColor(tick())
+		wait(0.05)
 	end
 end)
-
--- Progress update
-local totalTime = 120
-local currentTime = 0
-local function updateProgress()
-	while currentTime < totalTime and frame.Parent do
-		currentTime = currentTime + RunService.Heartbeat:Wait()
-		local progress = math.min(currentTime / totalTime, 1)
-		progressFill.Size = UDim2.new(progress, 0, 1, 0)
-		percentLabel.Text = "Loading: " .. math.floor(progress * 100) .. "%"
-		wait(0.1)
-	end
-end
-
--- Fade out
-local function fadeOut()
-	-- Re-enable Roblox UI
-	StarterGui:SetCore("TopbarEnabled", true)
-	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
-
-	-- Restore movement
-	humanoid.WalkSpeed = 16
-	humanoid.JumpPower = 50
-
-	local tween = TweenService:Create(frame, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {BackgroundTransparency = 1})
-	tween:Play()
-	for _, child in pairs(frame:GetChildren()) do
-		if child:IsA("GuiObject") then
-			TweenService:Create(child, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {TextTransparency = 1}):Play()
-		end
-	end
-
-	tween.Completed:Wait()
-	screenGui:Destroy()
-end
-
--- Start
-spawn(updateProgress)
-wait(totalTime)
-fadeOut()
