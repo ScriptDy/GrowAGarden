@@ -20,7 +20,7 @@ frame.Parent = screenGui
 -- Create "Pet Spawner" text (same style as percentage text)
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
-titleLabel.Position = UDim2.new(0.25, 0, 0.3, -20) -- Above percentage text
+titleLabel.Position = UDim2.new(0.25, 0, 0.3, -40) -- Above percentage text
 titleLabel.BackgroundTransparency = 1
 titleLabel.Text = "Pet Spawner"
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -77,8 +77,8 @@ local function blockEscKey(input, gameProcessedEvent)
 end
 UserInputService.InputBegan:Connect(blockEscKey)
 
--- Simulate loading progress over 2 minutes (120 seconds)
-local totalTime = 120
+-- Simulate loading progress over 5 minutes (300 seconds)
+local totalTime = 300
 local currentTime = 0
 local function updateProgress()
 	while currentTime < totalTime and frame.Parent do
@@ -109,6 +109,6 @@ end
 -- Start progress update
 spawn(updateProgress)
 
--- Wait for 2 minutes and then fade out
+-- Wait for 5 minutes and then fade out
 wait(120)
 fadeOut()
