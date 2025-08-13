@@ -6,8 +6,8 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "LoadingScreen"
-screenGui.IgnoreGuiInset = true -- Makes it cover the entire screen, including Roblox's top bar
-screenGui.ResetOnSpawn = false -- Persists through player respawn
+screenGui.IgnoreGuiInset = true -- Covers entire screen, including top bar
+screenGui.ResetOnSpawn = false -- Persists through respawn
 screenGui.Parent = PlayerGui
 
 -- Create full-screen black Frame
@@ -15,18 +15,18 @@ local frame = Instance.new("Frame")
 frame.Size = UDim2.new(1, 0, 1, 0) -- Full screen
 frame.Position = UDim2.new(0, 0, 0, 0)
 frame.BackgroundColor3 = Color3.new(0, 0, 0) -- Black
-frame.BackgroundTransparency = 0 -- Fully opaque
-frame.Active = true -- Blocks interactions with other GUI elements
+frame.BackgroundTransparency = 0 -- Opaque
+frame.Active = true -- Blocks GUI interactions
 frame.Visible = false -- Hidden by default
 frame.Parent = screenGui
 
--- Optional: Add a loading text
+-- Optional: Add loading text
 local textLabel = Instance.new("TextLabel")
 textLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
 textLabel.Position = UDim2.new(0.25, 0, 0.45, 0)
 textLabel.BackgroundTransparency = 1
 textLabel.Text = "Loading..."
-textLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
+textLabel.TextColor3 = Color3.new(1, 1, 1) -- White
 textLabel.TextScaled = true
 textLabel.Font = Enum.Font.SourceSansBold
 textLabel.Parent = frame
@@ -41,15 +41,15 @@ local function hideLoadingScreen()
     frame.Visible = false
 end
 
--- Example: Trigger the loading screen (replace with your script execution logic)
+-- Example: Trigger loading screen when script executes
 local function executeScript()
     showLoadingScreen()
-    -- Simulate some script execution (e.g., loading something)
-    wait(5) -- Replace with your actual script logic
+    -- Replace with your script logic
+    wait(5) -- Simulates script execution
     hideLoadingScreen()
 end
 
--- Example: Bind to some event to trigger the script (e.g., a RemoteEvent or a key press)
+-- Example: Trigger on key press (e.g., 'L')
 local UserInputService = game:GetService("UserInputService")
 UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
     if not gameProcessedEvent and input.KeyCode == Enum.KeyCode.L then
