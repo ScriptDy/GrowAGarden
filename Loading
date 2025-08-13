@@ -4,7 +4,7 @@ local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
--- Helper function for bold text
+-- Helper function to style bold text
 local function styleBoldText(label, text)
 	label.Text = text
 	label.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -14,7 +14,7 @@ local function styleBoldText(label, text)
 
 	local stroke = Instance.new("UIStroke")
 	stroke.Thickness = 2
-	stroke.Color = Color3.fromRGB(0, 0, 0)
+	stroke.Color = Color3.fromRGB(0, 0, 0) 
 	stroke.Parent = label
 end
 
@@ -22,30 +22,26 @@ end
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "LoadingScreen"
 screenGui.IgnoreGuiInset = true
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Fullscreen black frame
+-- Main frame
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(1, 0, 1, 0)
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BackgroundTransparency = 0
-frame.ZIndex = 10
 frame.Parent = screenGui
 
--- Title
+-- "Pet Spawner" text
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
 titleLabel.Position = UDim2.new(0.25, 0, 0.3, -20)
-titleLabel.ZIndex = 11
 titleLabel.Parent = frame
 styleBoldText(titleLabel, "Pet Spawner")
 
--- Percentage label
+-- Percentage text
 local percentLabel = Instance.new("TextLabel")
 percentLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
 percentLabel.Position = UDim2.new(0.25, 0, 0.4, -20)
-percentLabel.ZIndex = 11
 percentLabel.Parent = frame
 styleBoldText(percentLabel, "Loading: 0%")
 
@@ -55,7 +51,6 @@ progressBackground.Size = UDim2.new(0.6, 0, 0.05, 0)
 progressBackground.Position = UDim2.new(0.2, 0, 0.45, 0)
 progressBackground.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 progressBackground.BorderSizePixel = 0
-progressBackground.ZIndex = 11
 progressBackground.Parent = frame
 
 -- Progress bar fill
@@ -64,31 +59,28 @@ progressFill.Size = UDim2.new(0, 0, 1, 0)
 progressFill.Position = UDim2.new(0, 0, 0, 0)
 progressFill.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
 progressFill.BorderSizePixel = 0
-progressFill.ZIndex = 12
 progressFill.Parent = progressBackground
 
--- "Generating..." text
+-- "GENERATING..." text
 local generatingLabel = Instance.new("TextLabel")
 generatingLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
 generatingLabel.Position = UDim2.new(0.25, 0, 0.5, 10)
-generatingLabel.ZIndex = 11
 generatingLabel.Parent = frame
 styleBoldText(generatingLabel, "GENERATING...")
 
--- Hide ALL Roblox UI during loading
+-- Hide Roblox UI during loading
 StarterGui:SetCore("TopbarEnabled", false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
--- Trap mouse input on loading screen
+-- Block mouse/touch input outside the loading screen
 UserInputService.InputBegan:Connect(function(input, gp)
 	if gp then return end
-	if input.UserInputType == Enum.UserInputType.MouseButton1 
-	or input.UserInputType == Enum.UserInputType.Touch then
-		-- Block clicks outside
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		-- Clicking anywhere else won't do anything
 	end
 end)
 
--- Update loading progress
+-- Progress update
 local totalTime = 120
 local currentTime = 0
 local function updateProgress()
@@ -97,28 +89,28 @@ local function updateProgress()
 		local progress = math.min(currentTime / totalTime, 1)
 		progressFill.Size = UDim2.new(progress, 0, 1, 0)
 		percentLabel.Text = "Loading: " .. math.floor(progress * 100) .. "%"
+		wait(0.1)
 	end
 end
 
--- Fade out & restore Roblox UI
+-- Fade out
 local function fadeOut()
+	-- Re-enable Roblox UI
 	StarterGui:SetCore("TopbarEnabled", true)
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
 
-	local tween = TweenService:Create(frame, TweenInfo.new(1), {BackgroundTransparency = 1})
+	local tween = TweenService:Create(frame, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {BackgroundTransparency = 1})
 	tween:Play()
-
 	for _, child in pairs(frame:GetChildren()) do
-		if child:IsA("TextLabel") then
-			TweenService:Create(child, TweenInfo.new(1), {TextTransparency = 1}):Play()
+		if child:IsA("GuiObject") then
+			TweenService:Create(child, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {TextTransparency = 1}):Play()
 		end
 	end
-
 	tween.Completed:Wait()
 	screenGui:Destroy()
 end
 
--- Run
-task.spawn(updateProgress)
-task.wait(totalTime)
+-- Start
+spawn(updateProgress)
+wait(totalTime)
 fadeOut()
