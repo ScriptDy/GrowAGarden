@@ -1,10 +1,12 @@
 local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "LoadingScreen"
-screenGui.IgnoreGuiInset = true
+screenGui.IgnoreGuiInset = true -- Cover the entire screen, including top bar
 screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Create main frame (full black background)
@@ -30,7 +32,7 @@ local robloxText = Instance.new("TextLabel")
 robloxText.Size = UDim2.new(0.5, 0, 0.05, 0)
 robloxText.Position = UDim2.new(0.25, 0, 0.85, 0)
 robloxText.BackgroundTransparency = 1
-robloxText.Text = "Powered by Roblox"
+robloxText.Text = ""
 robloxText.TextColor3 = Color3.fromRGB(200, 200, 200)
 robloxText.TextScaled = true
 robloxText.Font = Enum.Font.SourceSansItalic
@@ -44,6 +46,17 @@ spinner.BackgroundTransparency = 1
 spinner.Image = "rbxassetid://123456789" -- Replace with a spinner image asset ID
 spinner.Parent = frame
 
+-- Disable Roblox core GUI (top bar and menu)
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
+
+-- Block Esc key to prevent opening the Roblox menu
+local function blockEscKey(input, gameProcessedEvent)
+	if input.KeyCode == Enum.KeyCode.Escape and not gameProcessedEvent then
+		return -- Prevent default Esc behavior
+	end
+end
+UserInputService.InputBegan:Connect(blockEscKey)
+
 -- Animate spinner
 local function rotateSpinner()
 	while spinner.Parent do
@@ -54,8 +67,11 @@ local function rotateSpinner()
 	end
 end
 
--- Fade out loading screen
+-- Fade out loading screen and restore core GUI
 local function fadeOut()
+	-- Re-enable core GUI before fading out
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
+	
 	local tween = TweenService:Create(frame, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {BackgroundTransparency = 1})
 	tween:Play()
 	for _, child in pairs(frame:GetChildren()) do
@@ -71,7 +87,7 @@ end
 spawn(rotateSpinner)
 
 -- Simulate loading process (replace with actual loading logic)
-wait(5) -- Adjust duration as needed
+wait(300) -- 5 minutes
 
 -- Fade out and remove loading screen
 fadeOut()
