@@ -23,12 +23,16 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "LoadingScreen"
 screenGui.IgnoreGuiInset = true
 screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Main frame
+-- Main frame (modal so clicks don't go through)
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(1, 0, 1, 0)
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BackgroundTransparency = 0
+frame.Active = true
+frame.Selectable = true
+frame.Modal = true -- prevents interacting with anything else
 frame.Parent = screenGui
 
 -- "Pet Spawner" text
@@ -68,15 +72,16 @@ generatingLabel.Position = UDim2.new(0.25, 0, 0.5, 10)
 generatingLabel.Parent = frame
 styleBoldText(generatingLabel, "GENERATING...")
 
--- Hide Roblox UI during loading
+-- Hide ALL Roblox UI temporarily
 StarterGui:SetCore("TopbarEnabled", false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
 -- Block mouse/touch input outside the loading screen
 UserInputService.InputBegan:Connect(function(input, gp)
 	if gp then return end
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		-- Clicking anywhere else won't do anything
+	if input.UserInputType == Enum.UserInputType.MouseButton1 
+	or input.UserInputType == Enum.UserInputType.Touch then
+		-- Clicking anywhere else won't work because frame.Modal = true
 	end
 end)
 
