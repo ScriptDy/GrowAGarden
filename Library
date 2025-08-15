@@ -174,7 +174,7 @@ button3.MouseButton1Click:Connect(function()
 end)
 
 -- Button 4
-local button3 = createButton(frame, 146, "Run Limit Hub Keyless")
+local button4 = createButton(frame, 146, "Run Limit Hub Keyless")
 button3.MouseButton1Click:Connect(function()
     button4.Text = "Loading..."
     button4.BackgroundTransparency = 0.5
@@ -190,8 +190,8 @@ end)
 
 
 -- Button 5
-local button4 = createButton(frame, 178, "Open Egg Detector")
-button4.MouseButton1Click:Connect(function()
+local button5 = createButton(frame, 178, "Open Egg Detector")
+button5.MouseButton1Click:Connect(function()
     button5.Text = "Loading..."
     button5.BackgroundTransparency = 0.5
     local success, err = pcall(function()
