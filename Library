@@ -78,7 +78,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -70, 0, 32)
 title.Position = UDim2.new(0, 10, 0, 10)
 title.BackgroundTransparency = 1
-title.Text = "Dyy Library"
+title.Text = "Dyy Script"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBlack
 title.TextSize = 22
@@ -158,57 +158,43 @@ button2.MouseButton1Click:Connect(function()
     button2.BackgroundTransparency = 0
 end)
 
+
 -- Button 3
-local button3 = createButton(frame, 114, "Speed Hub X Keyless")
+local button3 = createButton(frame, 114, "Limit Hub Keyless")
 button3.MouseButton1Click:Connect(function()
     button3.Text = "Loading..."
     button3.BackgroundTransparency = 0.5
     local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
-    end)
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua'))()
+end)
     button3.Text = success and "Loaded!" or "Failed!"
     if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
     wait(2)
-    button3.Text = "Speed Hub X Keyless"
+    button3.Text = "Limit Hub Keyless"
     button3.BackgroundTransparency = 0
 end)
 
+
 -- Button 4
-local button4 = createButton(frame, 146, "Limit Hub Keyless")
+local button4 = createButton(frame, 146, "Open Egg Detector")
 button4.MouseButton1Click:Connect(function()
     button4.Text = "Loading..."
     button4.BackgroundTransparency = 0.5
     local success, err = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua'))()
-end)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
+    end)
     button4.Text = success and "Loaded!" or "Failed!"
     if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
     wait(2)
-    button4.Text = "Limit Hub Keyless"
+    button4.Text = "Open Egg Detector"
     button4.BackgroundTransparency = 0
 end)
 
-
--- Button 5
-local button5 = createButton(frame, 178, "Open Egg Detector")
+-- Button 5: Run Pet Age Changer
+local button5 = createButton(frame, 178, "Run Age Weight Changer")
 button5.MouseButton1Click:Connect(function()
     button5.Text = "Loading..."
     button5.BackgroundTransparency = 0.5
-    local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
-    end)
-    button5.Text = success and "Loaded!" or "Failed!"
-    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
-    wait(2)
-    button5.Text = "Open Egg Detector"
-    button5.BackgroundTransparency = 0
-end)
-
--- Button 6: Run Pet Age Changer
-local button6 = createButton(frame, 210, "Run Age Weight Changer")
-button5.MouseButton1Click:Connect(function()
-    button6.Text = "Loading..."
-    button6.BackgroundTransparency = 0.5
     local success, err = pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
 
