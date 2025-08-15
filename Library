@@ -36,7 +36,7 @@ warningLabel.Size = UDim2.new(1, 0, 0, 20)
 warningLabel.Position = UDim2.new(0, 0, 0, -24)
 warningLabel.BackgroundTransparency = 0.2
 warningLabel.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
-warningLabel.Text = "âš GUI is still loading..."
+warningLabel.Text = "⚠GUI is still loading..."
 warningLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 warningLabel.Font = Enum.Font.GothamBold
 warningLabel.TextSize = 14
@@ -78,7 +78,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -70, 0, 32)
 title.Position = UDim2.new(0, 10, 0, 10)
 title.BackgroundTransparency = 1
-title.Text = "Dyy Library"
+title.Text = "Yawi Library"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBlack
 title.TextSize = 22
@@ -91,7 +91,7 @@ local footer = Instance.new("TextLabel")
 footer.Size = UDim2.new(1, 0, 0, 16)
 footer.Position = UDim2.new(0, 0, 1, -20)
 footer.BackgroundTransparency = 1
-footer.Text = ""
+footer.Text = "Tiktok: @yawiyawiyawiz1"
 footer.TextColor3 = Color3.fromRGB(160, 160, 160)
 footer.Font = Enum.Font.Gotham
 footer.TextSize = 12
@@ -187,6 +187,7 @@ button3.MouseButton1Click:Connect(function()
     button3.BackgroundTransparency = 0
 end)
 
+
 -- Button 5
 local button4 = createButton(frame, 146, "Open Egg Detector")
 button4.MouseButton1Click:Connect(function()
@@ -223,7 +224,7 @@ minBtn.Size = UDim2.new(0, 26, 0, 22)
 minBtn.Position = UDim2.new(1, -60, 0, 10)
 minBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 minBtn.BorderSizePixel = 0
-minBtn.Text = "“"
+minBtn.Text = "–"
 minBtn.Font = Enum.Font.GothamBold
 minBtn.TextSize = 22
 minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -241,7 +242,7 @@ minBtn.MouseButton1Click:Connect(function()
     button3.Visible = visible
     button4.Visible = visible
     footer.Visible = visible
-    minBtn.Text = visible and "“" or ""
+    minBtn.Text = visible and "–" or "+"
     frame.Size = visible and UDim2.new(0, 220, 0, 226) or UDim2.new(0, 220, 0, 45)
 end)
 
@@ -251,7 +252,7 @@ exitBtn.Size = UDim2.new(0, 26, 0, 22)
 exitBtn.Position = UDim2.new(1, -30, 0, 10)
 exitBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 exitBtn.BorderSizePixel = 0
-exitBtn.Text = "—"
+exitBtn.Text = "×"
 exitBtn.Font = Enum.Font.GothamBold
 exitBtn.TextSize = 22
 exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
