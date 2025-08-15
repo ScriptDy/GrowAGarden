@@ -78,7 +78,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -70, 0, 32)
 title.Position = UDim2.new(0, 10, 0, 10)
 title.BackgroundTransparency = 1
-title.Text = "Yawi Library"
+title.Text = "Dyy Library"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBlack
 title.TextSize = 22
@@ -91,7 +91,7 @@ local footer = Instance.new("TextLabel")
 footer.Size = UDim2.new(1, 0, 0, 16)
 footer.Position = UDim2.new(0, 0, 1, -20)
 footer.BackgroundTransparency = 1
-footer.Text = "Tiktok: @yawiyawiyawiz1"
+footer.Text = ""
 footer.TextColor3 = Color3.fromRGB(160, 160, 160)
 footer.Font = Enum.Font.Gotham
 footer.TextSize = 12
@@ -159,21 +159,35 @@ button2.MouseButton1Click:Connect(function()
 end)
 
 -- Button 3
-local button3 = createButton(frame, 114, "Run Yawi X Hub")
+local button3 = createButton(frame, 114, "Speed Hub Keyless")
 button3.MouseButton1Click:Connect(function()
     button3.Text = "Loading..."
     button3.BackgroundTransparency = 0.5
     local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/FullFeaturesObsa"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
     end)
     button3.Text = success and "Loaded!" or "Failed!"
     if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
     wait(2)
-    button3.Text = "Run Yawi X Hub"
+    button3.Text = "Speed Hub Keyless"
     button3.BackgroundTransparency = 0
 end)
 
 -- Button 4
+local button3 = createButton(frame, 114, "Limit Hub Keyless")
+button3.MouseButton1Click:Connect(function()
+    button3.Text = "Loading..."
+    button3.BackgroundTransparency = 0.5
+    local success, err = pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua'))()
+    button3.Text = success and "Loaded!" or "Failed!"
+    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
+    wait(2)
+    button3.Text = "Limit Hub Keyless"
+    button3.BackgroundTransparency = 0
+end)
+
+-- Button 5
 local button4 = createButton(frame, 146, "Open Egg Detector")
 button4.MouseButton1Click:Connect(function()
     button4.Text = "Loading..."
@@ -188,7 +202,7 @@ button4.MouseButton1Click:Connect(function()
     button4.BackgroundTransparency = 0
 end)
 
--- Button 5: Run Pet Weight Changer
+-- Button 6: Run Pet Weight Changer
 local button5 = createButton(frame, 178, "Run Pet Weight Changer")
 button5.MouseButton1Click:Connect(function()
     button5.Text = "Loading..."
@@ -209,7 +223,7 @@ minBtn.Size = UDim2.new(0, 26, 0, 22)
 minBtn.Position = UDim2.new(1, -60, 0, 10)
 minBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 minBtn.BorderSizePixel = 0
-minBtn.Text = "â€“"
+minBtn.Text = "“"
 minBtn.Font = Enum.Font.GothamBold
 minBtn.TextSize = 22
 minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -227,7 +241,7 @@ minBtn.MouseButton1Click:Connect(function()
     button3.Visible = visible
     button4.Visible = visible
     footer.Visible = visible
-    minBtn.Text = visible and "â€“" or "+"
+    minBtn.Text = visible and "“" or ""
     frame.Size = visible and UDim2.new(0, 220, 0, 226) or UDim2.new(0, 220, 0, 45)
 end)
 
@@ -237,7 +251,7 @@ exitBtn.Size = UDim2.new(0, 26, 0, 22)
 exitBtn.Position = UDim2.new(1, -30, 0, 10)
 exitBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 exitBtn.BorderSizePixel = 0
-exitBtn.Text = "Ã—"
+exitBtn.Text = "—"
 exitBtn.Font = Enum.Font.GothamBold
 exitBtn.TextSize = 22
 exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
