@@ -15,7 +15,7 @@ local player = Players.LocalPlayer
 
 -- GUI setup
 local gui = Instance.new("ScreenGui")
-gui.Name = "KuniHubPremiumGUI"
+gui.Name = "DyyPremiumGUI"
 gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = player:WaitForChild("PlayerGui")
@@ -78,7 +78,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -70, 0, 32)
 title.Position = UDim2.new(0, 10, 0, 10)
 title.BackgroundTransparency = 1
-title.Text = "Yawi Library"
+title.Text = "Dyy Library"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBlack
 title.TextSize = 22
