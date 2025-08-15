@@ -204,13 +204,14 @@ button5.MouseButton1Click:Connect(function()
     button5.BackgroundTransparency = 0
 end)
 
--- Button 6: Run Pet Weight Changer
-local button6 = createButton(frame, 210, "Run Pet Weight Changer")
+-- Button 6: Run Pet Age Changer
+local button6 = createButton(frame, 210, "Run Age Weight Changer")
 button5.MouseButton1Click:Connect(function()
     button6.Text = "Loading..."
     button6.BackgroundTransparency = 0.5
     local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/petsizechanger"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
+
     end)
     button6.Text = success and "Loaded!" or "Failed!"
     if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
