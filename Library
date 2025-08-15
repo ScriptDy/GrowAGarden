@@ -159,7 +159,7 @@ button2.MouseButton1Click:Connect(function()
 end)
 
 -- Button 3
-local button3 = createButton(frame, 114, "Speed Hub Keyless")
+local button3 = createButton(frame, 114, "Run Speed Hub Keyless")
 button3.MouseButton1Click:Connect(function()
     button3.Text = "Loading..."
     button3.BackgroundTransparency = 0.5
@@ -174,7 +174,7 @@ button3.MouseButton1Click:Connect(function()
 end)
 
 -- Button 4
-local button3 = createButton(frame, 114, "Limit Hub Keyless")
+local button3 = createButton(frame, 146, "Run Limit Hub Keyless")
 button3.MouseButton1Click:Connect(function()
     button4.Text = "Loading..."
     button4.BackgroundTransparency = 0.5
@@ -190,7 +190,7 @@ end)
 
 
 -- Button 5
-local button4 = createButton(frame, 146, "Open Egg Detector")
+local button4 = createButton(frame, 178, "Open Egg Detector")
 button4.MouseButton1Click:Connect(function()
     button5.Text = "Loading..."
     button5.BackgroundTransparency = 0.5
@@ -205,7 +205,7 @@ button4.MouseButton1Click:Connect(function()
 end)
 
 -- Button 6: Run Pet Weight Changer
-local button6 = createButton(frame, 178, "Run Pet Weight Changer")
+local button6 = createButton(frame, 210, "Run Pet Weight Changer")
 button5.MouseButton1Click:Connect(function()
     button6.Text = "Loading..."
     button6.BackgroundTransparency = 0.5
