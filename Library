@@ -159,7 +159,7 @@ button2.MouseButton1Click:Connect(function()
 end)
 
 -- Button 3
-local button3 = createButton(frame, 114, "Run Speed Hub Keyless")
+local button3 = createButton(frame, 114, "Speed Hub X Keyless")
 button3.MouseButton1Click:Connect(function()
     button3.Text = "Loading..."
     button3.BackgroundTransparency = 0.5
@@ -169,12 +169,12 @@ button3.MouseButton1Click:Connect(function()
     button3.Text = success and "Loaded!" or "Failed!"
     if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
     wait(2)
-    button3.Text = "Speed Hub Keyless"
+    button3.Text = "Speed Hub X Keyless"
     button3.BackgroundTransparency = 0
 end)
 
 -- Button 4
-local button4 = createButton(frame, 146, "Run Limit Hub Keyless")
+local button4 = createButton(frame, 146, "Limit Hub Keyless")
 button4.MouseButton1Click:Connect(function()
     button4.Text = "Loading..."
     button4.BackgroundTransparency = 0.5
