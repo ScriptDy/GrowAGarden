@@ -161,8 +161,8 @@ end)
 
 
 -- Button 3
-local button3 = createButton(frame, 144, "Open Egg Detector")
-button4.MouseButton1Click:Connect(function()
+local button3 = createButton(frame, 114, "Open Egg Detector")
+button3.MouseButton1Click:Connect(function()
     button3.Text = "Loading..."
     button3.BackgroundTransparency = 0.5
     local success, err = pcall(function()
