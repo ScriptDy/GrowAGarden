@@ -184,7 +184,7 @@ button4.MouseButton1Click:Connect(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
 
     end)
-    button6.Text = success and "Loaded!" or "Failed!"
+    button4.Text = success and "Loaded!" or "Failed!"
     if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
     wait(2)
     button4.Text = "Run Pet Weight Changer"
