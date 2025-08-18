@@ -1,99 +1,228 @@
+-- SafeLoadingBar with UI Blur Background
+
+--//////////////////////////////////////////////////////////////////////////////
+-- Config
+--//////////////////////////////////////////////////////////////////////////////
+local UI_NAME     = "SafeLoadingBar"
+local WINDOW_SIZE = Vector2.new(420, 150)
+local IMAGE_ASSET = "rbxassetid://116749637853653"
+local CREATOR_TEXT = "Made by : DrexYT"
+local LINK_RICHTEXT = "<u>https://discord.gg/drexscripthub</u>"
+
+local TYPE_BASE_TEXT  = "Generating Script"
+local TOTAL_STEPS     = 100
+local STEP_TWEEN_TIME = 2.50
+local STEP_WAIT       = 3.00
+
+local AUTO_CLOSE_ON_DONE = false
+local CLOSE_DELAY = 1.0
+
+--//////////////////////////////////////////////////////////////////////////////
 -- Services
+--//////////////////////////////////////////////////////////////////////////////
 local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+local TweenService = game:GetService("TweenService")
 
--- Create the ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "CustomLoadingScreen"
-screenGui.ResetOnSpawn = false
-screenGui.IgnoreGuiInset = true
-screenGui.Parent = game:GetService("CoreGui")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- Full black background
-local background = Instance.new("Frame")
-background.Size = UDim2.new(1, 0, 1, 0)
-background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-background.BorderSizePixel = 0
-background.Parent = screenGui
-
--- Player avatar icon (top-left, slightly lowered)
-local avatarImage = Instance.new("ImageLabel")
-avatarImage.Size = UDim2.new(0, 80, 0, 80)
-avatarImage.Position = UDim2.new(0, 20, 0, 100) -- lowered Y from 20 to 100
-avatarImage.BackgroundTransparency = 1
-avatarImage.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
-avatarImage.Parent = background
-
--- Top Title: RAYFIELD
-local rayfieldTitle = Instance.new("TextLabel")
-rayfieldTitle.Text = "RAYFIELD"
-rayfieldTitle.Size = UDim2.new(0, 400, 0, 50)
-rayfieldTitle.Position = UDim2.new(0.5, -200, 0.05, 0)
-rayfieldTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-rayfieldTitle.Font = Enum.Font.GothamBlack
-rayfieldTitle.TextSize = 36
-rayfieldTitle.BackgroundTransparency = 1
-rayfieldTitle.Parent = background
-
--- Loading Label (increments of 5)
-local loadingLabel = Instance.new("TextLabel")
-loadingLabel.Text = "Loading: 0%"
-loadingLabel.Size = UDim2.new(0, 300, 0, 40)
-loadingLabel.Position = UDim2.new(0.5, -150, 0.12, 0)
-loadingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-loadingLabel.Font = Enum.Font.Gotham
-loadingLabel.TextSize = 24
-loadingLabel.BackgroundTransparency = 1
-loadingLabel.Parent = background
-
--- Progress bar background
-local progressBarBackground = Instance.new("Frame")
-progressBarBackground.Size = UDim2.new(0, 400, 0, 25)
-progressBarBackground.Position = UDim2.new(0.5, -200, 0.45, 0)
-progressBarBackground.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-progressBarBackground.BorderSizePixel = 0
-progressBarBackground.Parent = background
-
--- Rainbow progress bar (foreground)
-local progressBar = Instance.new("Frame")
-progressBar.Size = UDim2.new(0, 0, 1, 0)
-progressBar.Position = UDim2.new(0, 0, 0, 0)
-progressBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-progressBar.BorderSizePixel = 0
-progressBar.Parent = progressBarBackground
-
--- Bottom text: Pet And Seed Spawner (larger)
-local descLabel = Instance.new("TextLabel")
-descLabel.Text = "Pet And Seed Spawner"
-descLabel.Size = UDim2.new(0, 600, 0, 60)
-descLabel.Position = UDim2.new(0.5, -300, 0.65, 0)
-descLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-descLabel.Font = Enum.Font.GothamBlack
-descLabel.TextSize = 28
-descLabel.BackgroundTransparency = 1
-descLabel.Parent = background
-
--- Rainbow color function
-local function getRainbowColor(t)
-	local r = math.sin(t) * 127 + 128
-	local g = math.sin(t + 2) * 127 + 128
-	local b = math.sin(t + 4) * 127 + 128
-	return Color3.fromRGB(r, g, b)
+--//////////////////////////////////////////////////////////////////////////////
+-- Helpers
+--//////////////////////////////////////////////////////////////////////////////
+local function makeShadowCopy(label: TextLabel, offset: Vector2, darker: boolean?)
+	local shadow = label:Clone()
+	shadow.ZIndex = label.ZIndex - 1
+	shadow.Position = label.Position + UDim2.fromOffset(offset.X, offset.Y)
+	if darker then
+		shadow.TextColor3 = Color3.new(0, 0, 0)
+		shadow.TextStrokeTransparency = 0.0
+	end
+	shadow.Parent = label.Parent
+	return shadow
 end
 
--- Animate loading: 5% every 4 seconds
-spawn(function()
-	for i = 0, 100, 5 do
-		loadingLabel.Text = "Loading: " .. i .. "%"
-		progressBar:TweenSize(UDim2.new(i / 100, 0, 1, 0), "Out", "Quad", 1, true)
-		progressBar.BackgroundColor3 = getRainbowColor(tick())
+local function tweenSizeX(frame: Frame, percent01: number, timeS: number)
+	percent01 = math.clamp(percent01, 0, 1)
+	local goal = { Size = UDim2.new(percent01, 0, 1, 0) }
+	local info = TweenInfo.new(timeS, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+	local tw = TweenService:Create(frame, info, goal)
+	tw:Play()
+	tw.Completed:Wait()
+end
 
-		wait(4) -- 4 seconds per 5%
+--//////////////////////////////////////////////////////////////////////////////
+-- Build UI
+--//////////////////////////////////////////////////////////////////////////////
+local function buildUI()
+	local existing = PlayerGui:FindFirstChild(UI_NAME)
+	if existing then existing:Destroy() end
+
+	local gui = Instance.new("ScreenGui")
+	gui.Name = UI_NAME
+	gui.IgnoreGuiInset = true
+	gui.ResetOnSpawn = false
+	gui.Parent = PlayerGui
+
+	-- Background Frame with Blur
+	local bg = Instance.new("Frame")
+	bg.Size = UDim2.fromScale(1, 1)
+	bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	bg.BackgroundTransparency = 0.3
+	bg.Parent = gui
+
+	local blur = Instance.new("UIBlur")
+	blur.Size = 20 -- how strong the blur looks
+	blur.Parent = bg
+
+	-- Root window
+	local root = Instance.new("Frame")
+	root.Size = UDim2.fromOffset(WINDOW_SIZE.X, WINDOW_SIZE.Y)
+	root.Position = UDim2.fromScale(0.5, 0.5)
+	root.AnchorPoint = Vector2.new(0.5, 0.5)
+	root.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	root.Parent = gui
+
+	local rootCorner = Instance.new("UICorner")
+	rootCorner.CornerRadius = UDim.new(0, 14)
+	rootCorner.Parent = root
+
+	-- Logo
+	local logo = Instance.new("ImageLabel")
+	logo.Name = "Logo"
+	logo.Size = UDim2.fromOffset(120, 120)
+	logo.Position = UDim2.new(0, 15, 0.5, 0)
+	logo.AnchorPoint = Vector2.new(0, 0.5)
+	logo.BackgroundTransparency = 1
+	logo.Image = IMAGE_ASSET
+	logo.ScaleType = Enum.ScaleType.Fit
+	logo.Parent = root
+
+	-- Creator
+	local by = Instance.new("TextLabel")
+	by.Name = "Creator"
+	by.Text = CREATOR_TEXT
+	by.Size = UDim2.new(1, -170, 0, 25)
+	by.Position = UDim2.new(0, 150, 0.15, 0)
+	by.BackgroundTransparency = 1
+	by.Font = Enum.Font.GothamBlack
+	by.TextSize = 18
+	by.TextColor3 = Color3.new(1,1,1)
+	by.TextStrokeTransparency = 0.8
+	by.TextStrokeColor3 = Color3.new(0,0,0)
+	by.ZIndex = 2
+	by.Parent = root
+	makeShadowCopy(by, Vector2.new(2,2), true)
+
+	-- Link
+	local link = Instance.new("TextLabel")
+	link.Name = "Link"
+	link.Text = LINK_RICHTEXT
+	link.RichText = true
+	link.Size = UDim2.new(1, -170, 0, 20)
+	link.Position = UDim2.new(0, 150, 0.33, 0)
+	link.BackgroundTransparency = 1
+	link.Font = Enum.Font.GothamSemibold
+	link.TextSize = 16
+	link.TextColor3 = Color3.new(1,1,1)
+	link.TextStrokeTransparency = 0.8
+	link.TextStrokeColor3 = Color3.new(0,0,0)
+	link.ZIndex = 2
+	link.Parent = root
+	makeShadowCopy(link, Vector2.new(2,2), true)
+
+	-- Typewriter text
+	local typeLbl = Instance.new("TextLabel")
+	typeLbl.Name = "Typewriter"
+	typeLbl.Text = ""
+	typeLbl.Size = UDim2.new(1, -170, 0, 35)
+	typeLbl.Position = UDim2.new(0, 150, 0.45, 0)
+	typeLbl.BackgroundTransparency = 1
+	typeLbl.Font = Enum.Font.GothamBlack
+	typeLbl.TextSize = 18
+	typeLbl.TextColor3 = Color3.new(1,1,1)
+	typeLbl.TextStrokeTransparency = 0.8
+	typeLbl.TextStrokeColor3 = Color3.new(0,0,0)
+	typeLbl.ZIndex = 2
+	typeLbl.Parent = root
+	makeShadowCopy(typeLbl, Vector2.new(2,2), true)
+
+	-- Progress bar
+	local barBG = Instance.new("Frame")
+	barBG.Name = "ProgressBG"
+	barBG.Size = UDim2.fromOffset(240, 25)
+	barBG.Position = UDim2.new(0, 150, 0.65, 0)
+	barBG.BorderSizePixel = 0
+	barBG.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	barBG.Parent = root
+	local barBGCorner = Instance.new("UICorner")
+	barBGCorner.CornerRadius = UDim.new(0, 8)
+	barBGCorner.Parent = barBG
+
+	local barFill = Instance.new("Frame")
+	barFill.Name = "ProgressFill"
+	barFill.Size = UDim2.new(0, 0, 1, 0)
+	barFill.BorderSizePixel = 0
+	barFill.BackgroundColor3 = Color3.fromRGB(0,255,0)
+	barFill.Parent = barBG
+	local barFillCorner = Instance.new("UICorner")
+	barFillCorner.CornerRadius = UDim.new(0, 8)
+	barFillCorner.Parent = barFill
+
+	local percentLbl = Instance.new("TextLabel")
+	percentLbl.Name = "Percent"
+	percentLbl.Text = "0%"
+	percentLbl.Size = UDim2.new(1, 0, 0, 20)
+	percentLbl.Position = UDim2.new(0.5, 0, 1.05, 0)
+	percentLbl.AnchorPoint = Vector2.new(0.5, 0)
+	percentLbl.BackgroundTransparency = 1
+	percentLbl.Font = Enum.Font.GothamBlack
+	percentLbl.TextSize = 18
+	percentLbl.TextColor3 = Color3.new(1,1,1)
+	percentLbl.TextStrokeTransparency = 0.8
+	percentLbl.TextStrokeColor3 = Color3.new(0,0,0)
+	percentLbl.ZIndex = 2
+	percentLbl.Parent = barBG
+
+	return gui, typeLbl, barFill, percentLbl
+end
+
+--//////////////////////////////////////////////////////////////////////////////
+-- Behavior
+--//////////////////////////////////////////////////////////////////////////////
+local function typewriter(label: TextLabel)
+	label.Text = ""
+	for i = 1, #TYPE_BASE_TEXT do
+		label.Text = string.sub(TYPE_BASE_TEXT, 1, i)
+		task.wait(0.03)
 	end
+	label.Text = TYPE_BASE_TEXT .. "."
+	task.wait(0.03)
+	label.Text = TYPE_BASE_TEXT .. ".."
+	task.wait(0.03)
+end
 
-	-- Freeze at 100%, rainbow keeps animating
-	while true do
-		progressBar.BackgroundColor3 = getRainbowColor(tick())
-		wait(0.05)
+local function runProgress(fill: Frame, percentLbl: TextLabel)
+	for i = 0, TOTAL_STEPS do
+		local p = i / TOTAL_STEPS
+		tweenSizeX(fill, p, STEP_TWEEN_TIME)
+		percentLbl.Text = tostring(i) .. "%"
+		if STEP_WAIT > 0 then task.wait(STEP_WAIT) end
+	end
+end
+
+--//////////////////////////////////////////////////////////////////////////////
+-- Main
+--//////////////////////////////////////////////////////////////////////////////
+task.spawn(function()
+	local gui, typeLbl, barFill, percentLbl = buildUI()
+	typewriter(typeLbl)
+	runProgress(barFill, percentLbl)
+
+	if AUTO_CLOSE_ON_DONE then
+		task.delay(CLOSE_DELAY, function()
+			if gui and gui.Parent then
+				gui:Destroy()
+			end
+		end)
 	end
 end)
