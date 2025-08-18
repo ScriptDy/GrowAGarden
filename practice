@@ -1,3 +1,3 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/Library"))()
 ID="57ea602b-18fe-4aa6-934d-1edef20ecc0e";
 loadstring(game:HttpGet("https://cdn.reverse.software/loader.luau"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/Library"))()
