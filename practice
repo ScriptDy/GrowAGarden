@@ -1,5 +1,5 @@
-ID="57ea602b-18fe-4aa6-934d-1edef20ecc0e";
-loadstring(game:HttpGet("https://cdn.reverse.software/loader.luau"))()
+-- For Mobile Copy:
+loadstring(game:HttpGet("https://api.rubis.app/v2/scrap/oDIjKYO1XVbaDHo1/raw", true))()
 -- SKIDDED BY SIGMA @rizzify101
 -- SKIDDED BY SIGMA @rizzify101
 -- SKIDDED BY SIGMA @rizzify101
