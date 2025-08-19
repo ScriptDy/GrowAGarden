@@ -1,35 +1,49 @@
--- SafeLoadingBar with UI Blur Background
+-- SIGMA @rizzify101
+-- SafeLoadingBar (Clean Rebuild)
+-- - Reconstructed from a dumped/partially-obfuscated client script.
+-- - Attribution preserved: the UI shows "Made by : DrexYT" and the Discord link.
+-- - Removed all remote code loading, webhook/proxy variables, and fenv usage.
+-- - No network calls; no telemetry. Pure first-party Roblox APIs.
+-- - If you need to run additional logic after the bar reaches 100%, hook the
+--   optional OnComplete() at the bottom.
 
 --//////////////////////////////////////////////////////////////////////////////
--- Config
+-- Config (visuals + timing)
 --//////////////////////////////////////////////////////////////////////////////
-local UI_NAME     = "SafeLoadingBar"
-local WINDOW_SIZE = Vector2.new(420, 150)
-local IMAGE_ASSET = "rbxassetid://116749637853653"
-local CREATOR_TEXT = "Made by : DrexYT"
-local LINK_RICHTEXT = "<u>https://discord.gg/drexscripthub</u>"
+local UI_NAME            = "SafeLoadingBar"
+local WINDOW_SIZE        = Vector2.new(420, 150)
+local IMAGE_ASSET        = "rbxassetid://116749637853653" -- kept from dump
+local CREATOR_TEXT       = "Made by : DrexYT"             -- attribution preserved
+local LINK_RICHTEXT      = "<u>https://discord.gg/drexscripthub</u>"
 
-local TYPE_BASE_TEXT  = "Generating Script"
-local TOTAL_STEPS     = 100
-local STEP_TWEEN_TIME = 2.50
-local STEP_WAIT       = 3.00
+-- Text typed on screen (replicates the original "Generating Script..")
+local TYPE_BASE_TEXT     = "Generating Script"
 
+-- Progress animation (the original did 100 tiny steps w/ long waits;
+-- here we keep the same step granularity while using sane, fast timings.
+-- If you truly want the original very slow pacing, set STEP_TWEEN_TIME=2.5 and STEP_WAIT=3.)
+local TOTAL_STEPS        = 100
+local STEP_TWEEN_TIME    = 0.05
+local STEP_WAIT          = 0.00
+
+-- Optional: close the GUI when complete (original kept it; default false)
 local AUTO_CLOSE_ON_DONE = false
-local CLOSE_DELAY = 1.0
+local CLOSE_DELAY        = 1.0
 
 --//////////////////////////////////////////////////////////////////////////////
 -- Services
 --//////////////////////////////////////////////////////////////////////////////
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
+local Players       = game:GetService("Players")
+local TweenService  = game:GetService("TweenService")
 
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local LocalPlayer   = Players.LocalPlayer
+local PlayerGui     = LocalPlayer:WaitForChild("PlayerGui")
 
 --//////////////////////////////////////////////////////////////////////////////
 -- Helpers
 --//////////////////////////////////////////////////////////////////////////////
 local function makeShadowCopy(label: TextLabel, offset: Vector2, darker: boolean?)
+	-- Creates a simple "shadow" by cloning the label and putting it behind.
 	local shadow = label:Clone()
 	shadow.ZIndex = label.ZIndex - 1
 	shadow.Position = label.Position + UDim2.fromOffset(offset.X, offset.Y)
@@ -54,6 +68,7 @@ end
 -- Build UI
 --//////////////////////////////////////////////////////////////////////////////
 local function buildUI()
+	-- Remove any existing instance to avoid duplicates
 	local existing = PlayerGui:FindFirstChild(UI_NAME)
 	if existing then existing:Destroy() end
 
@@ -63,18 +78,6 @@ local function buildUI()
 	gui.ResetOnSpawn = false
 	gui.Parent = PlayerGui
 
-	-- Background Frame with Blur
-	local bg = Instance.new("Frame")
-	bg.Size = UDim2.fromScale(1, 1)
-	bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	bg.BackgroundTransparency = 0.3
-	bg.Parent = gui
-
-	local blur = Instance.new("UIBlur")
-	blur.Size = 20 -- how strong the blur looks
-	blur.Parent = bg
-
-	-- Root window
 	local root = Instance.new("Frame")
 	root.Size = UDim2.fromOffset(WINDOW_SIZE.X, WINDOW_SIZE.Y)
 	root.Position = UDim2.fromScale(0.5, 0.5)
@@ -86,7 +89,6 @@ local function buildUI()
 	rootCorner.CornerRadius = UDim.new(0, 14)
 	rootCorner.Parent = root
 
-	-- Logo
 	local logo = Instance.new("ImageLabel")
 	logo.Name = "Logo"
 	logo.Size = UDim2.fromOffset(120, 120)
@@ -97,7 +99,7 @@ local function buildUI()
 	logo.ScaleType = Enum.ScaleType.Fit
 	logo.Parent = root
 
-	-- Creator
+	-- "Made by : DrexYT" (with shadow clone like the dump)
 	local by = Instance.new("TextLabel")
 	by.Name = "Creator"
 	by.Text = CREATOR_TEXT
@@ -109,11 +111,12 @@ local function buildUI()
 	by.TextColor3 = Color3.new(1,1,1)
 	by.TextStrokeTransparency = 0.8
 	by.TextStrokeColor3 = Color3.new(0,0,0)
+	by.TextWrapped = true
 	by.ZIndex = 2
 	by.Parent = root
 	makeShadowCopy(by, Vector2.new(2,2), true)
 
-	-- Link
+	-- Link (with shadow clone)
 	local link = Instance.new("TextLabel")
 	link.Name = "Link"
 	link.Text = LINK_RICHTEXT
@@ -126,11 +129,12 @@ local function buildUI()
 	link.TextColor3 = Color3.new(1,1,1)
 	link.TextStrokeTransparency = 0.8
 	link.TextStrokeColor3 = Color3.new(0,0,0)
+	link.TextWrapped = true
 	link.ZIndex = 2
 	link.Parent = root
 	makeShadowCopy(link, Vector2.new(2,2), true)
 
-	-- Typewriter text
+	-- Typewriter label (with shadow clone)
 	local typeLbl = Instance.new("TextLabel")
 	typeLbl.Name = "Typewriter"
 	typeLbl.Text = ""
@@ -142,6 +146,7 @@ local function buildUI()
 	typeLbl.TextColor3 = Color3.new(1,1,1)
 	typeLbl.TextStrokeTransparency = 0.8
 	typeLbl.TextStrokeColor3 = Color3.new(0,0,0)
+	typeLbl.TextWrapped = true
 	typeLbl.ZIndex = 2
 	typeLbl.Parent = root
 	makeShadowCopy(typeLbl, Vector2.new(2,2), true)
@@ -183,7 +188,7 @@ local function buildUI()
 	percentLbl.ZIndex = 2
 	percentLbl.Parent = barBG
 
-	return gui, typeLbl, barFill, percentLbl
+	return gui, root, typeLbl, barFill, percentLbl
 end
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -191,10 +196,12 @@ end
 --//////////////////////////////////////////////////////////////////////////////
 local function typewriter(label: TextLabel)
 	label.Text = ""
+	-- Build "Generating Script" one character at a time, like the dump
 	for i = 1, #TYPE_BASE_TEXT do
 		label.Text = string.sub(TYPE_BASE_TEXT, 1, i)
 		task.wait(0.03)
 	end
+	-- Then add "." then ".." (the dump showed one then two dots)
 	label.Text = TYPE_BASE_TEXT .. "."
 	task.wait(0.03)
 	label.Text = TYPE_BASE_TEXT .. ".."
@@ -214,7 +221,7 @@ end
 -- Main
 --//////////////////////////////////////////////////////////////////////////////
 task.spawn(function()
-	local gui, typeLbl, barFill, percentLbl = buildUI()
+	local gui, _, typeLbl, barFill, percentLbl = buildUI()
 	typewriter(typeLbl)
 	runProgress(barFill, percentLbl)
 
@@ -225,4 +232,27 @@ task.spawn(function()
 			end
 		end)
 	end
+
+	-- Optional hook for your game logic once loading finishes:
+	pcall(function()
+		local fn = script:FindFirstChild("OnComplete")
+		if typeof(fn) == "Instance" and fn:IsA("BindableEvent") then
+			fn:Fire()
+		end
+	end)
 end)
+
+--[[ ---------------------------------------------------------------------------
+Integration Hook (optional)
+Create a BindableEvent child named "OnComplete" under this LocalScript if you
+want to run custom code after the progress hits 100%. Example:
+
+local ev = Instance.new("BindableEvent")
+ev.Name = "OnComplete"
+ev.Parent = script
+ev.Event:Connect(function()
+	print("Loading bar finished; run follow-up logic here.")
+end)
+
+No network calls, no dynamic loaders. Safe to ship.
+----------------------------------------------------------------------------- ]]
