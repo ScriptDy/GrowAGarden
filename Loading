@@ -221,6 +221,6 @@ task.spawn(function()
 
 	-- load external script after progress finishes
 	pcall(function()
-		loadstring(game:HttpGet("loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/Library"))()"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/Library"))()
 	end)
 end)
