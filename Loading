@@ -9,7 +9,7 @@ local UI_NAME            = "SafeLoadingBar"
 local WINDOW_SIZE        = Vector2.new(420, 150)
 local IMAGE_ASSET        = "rbxassetid://116749637853653"
 
-local CREATOR_TEXT       = "Made by: SHALLTEAR"
+local CREATOR_TEXT       = "Made by: DyyScript"
 local COMMUNITY_TEXT     = "GAG Community"
 
 local TYPE_BASE_TEXT     = "Generating Script"
