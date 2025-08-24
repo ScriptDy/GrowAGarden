@@ -13,8 +13,8 @@ gui.Parent = game:GetService("CoreGui")
 
 -- Main Frame
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 320, 0, 360)
-frame.Position = UDim2.new(0.5, -150, 0.5, -180)
+frame.Size = UDim2.new(0, 320, 0, 380) -- 🔹 fixed size for 8+ buttons
+frame.Position = UDim2.new(0.5, -160, 0.5, -190)
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 0
@@ -125,14 +125,15 @@ miniLogo.MouseButton1Click:Connect(function()
     miniLogo.Visible = false
 end)
 
--- ✅ Scrollable Button Holder
+-- ✅ Scrollable Button Holder (fixed)
 local scrollFrame = Instance.new("ScrollingFrame")
-scrollFrame.Size = UDim2.new(1, -10, 1, -50) -- under topbar
+scrollFrame.Size = UDim2.new(1, -10, 1, -50) -- below topbar
 scrollFrame.Position = UDim2.new(0, 5, 0, 45)
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.BorderSizePixel = 0
-scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0) -- will auto expand
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 scrollFrame.ScrollBarThickness = 6
+scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(180, 180, 180)
 scrollFrame.Parent = frame
 
 local layout = Instance.new("UIListLayout")
@@ -182,7 +183,7 @@ local function createPanelButton(parent, mainText, subText, callback)
     return btn
 end
 
--- ✅ Script Buttons (now auto-stack with scrolling)
+-- ✅ Script Buttons (auto-stack with scroll)
 createPanelButton(scrollFrame, "Project Reverse", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua", true))("discord.gg/csxu2nCkw9")
 end)
