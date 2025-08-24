@@ -169,8 +169,12 @@ createPanelButton(frame, 50, "Project Reverse", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua", true))("discord.gg/csxu2nCkw9")
 end)
 
-createPanelButton(frame, 110, "Limit Hub Keyless", "Click to Execute", function()
+createPanelButton(frame, 110, "Limit Hub (Keyless)", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua"))()
+end)
+
+createPanelButton(frame, 110, "SpeedhubX (Keyless)", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
 end)
 
 createPanelButton(frame, 170, "Egg Randomizer", "Click to Execute", function()
