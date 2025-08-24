@@ -181,6 +181,10 @@ createPanelButton(frame, 170, "Egg Randomizer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
 end)
 
+createPanelButton(frame, 170, "Egg Randomizer", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/FreezeTrade"))()
+end)
+
 createPanelButton(frame, 230, "Pet Age Changer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
 end)
