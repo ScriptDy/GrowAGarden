@@ -125,17 +125,28 @@ miniLogo.MouseButton1Click:Connect(function()
     miniLogo.Visible = false
 end)
 
--- ✅ Scrollable Button Holder (fixed)
+-- ✅ Scrollable Button Holder (with scrollbar always visible)
 local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Size = UDim2.new(1, -10, 1, -50) -- below topbar
 scrollFrame.Position = UDim2.new(0, 5, 0, 45)
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.BorderSizePixel = 0
 scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollFrame.ScrollBarThickness = 6
-scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(180, 180, 180)
+
+-- Scrollbar styling
+scrollFrame.ScrollBarThickness = 8
+scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 200, 200)
+scrollFrame.MidImage = "rbxassetid://7445543667"
+scrollFrame.TopImage = "rbxassetid://7445543667"
+scrollFrame.BottomImage = "rbxassetid://7445543667"
+
+-- Force scrollbar to always show
+scrollFrame.ScrollingEnabled = true
+scrollFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+scrollFrame.VerticalScrollBarPosition = Enum.ScrollBarPosition.Right
 scrollFrame.Parent = frame
 
+-- Auto-size scroll content
 local layout = Instance.new("UIListLayout")
 layout.Padding = UDim.new(0, 10)
 layout.FillDirection = Enum.FillDirection.Vertical
@@ -145,6 +156,14 @@ layout.Parent = scrollFrame
 
 layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+end)
+
+-- Hover effect for scrollbar
+scrollFrame.MouseEnter:Connect(function()
+    scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255)
+end)
+scrollFrame.MouseLeave:Connect(function()
+    scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 200, 200)
 end)
 
 -- Button Maker
