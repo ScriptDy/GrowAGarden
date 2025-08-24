@@ -177,7 +177,6 @@ createPanelButton(frame, 170, "Open Egg Detector", "Click to Execute", function(
     loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
 end)
 
-createPanelButton(fra
-me, 230, "Run Pet Age Changer", "Click to Execute", function()
+createPanelButton(frame, 230, "Run Pet Age Changer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
 end)
