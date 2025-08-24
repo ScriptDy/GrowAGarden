@@ -1,0 +1,183 @@
+-- SKIDDED BY SIGMA @rizzify101
+-- GUI Styled like GAG Script Loader 2.0 (with small "D" logo toggle)
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+
+-- Main GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "GAG_ScriptLoader"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = game:GetService("CoreGui") -- ✅ CoreGui for executors
+
+-- Main Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 320)
+frame.Position = UDim2.new(0.5, -150, 0.5, -160)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BackgroundTransparency = 0.3 -- ✅ Transparent background
+frame.BorderSizePixel = 0
+frame.Parent = gui
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+-- Light border around main frame
+local stroke = Instance.new("UIStroke")
+stroke.Thickness = 2 -- border width
+stroke.Color = Color3.fromRGB(200, 200, 200) -- light gray
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+stroke.Parent = frame
+
+-- Mini Logo (hidden until minimized, shows "D")
+local miniLogo = Instance.new("TextButton")
+miniLogo.Size = UDim2.new(0, 50, 0, 50)
+miniLogo.Position = UDim2.new(0, 20, 0.8, 0) -- bottom-left
+miniLogo.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+miniLogo.BorderSizePixel = 0
+miniLogo.Text = "D"
+miniLogo.TextColor3 = Color3.fromRGB(255, 255, 255)
+miniLogo.Font = Enum.Font.GothamBold
+miniLogo.TextSize = 28
+miniLogo.Visible = false
+miniLogo.Parent = gui
+Instance.new("UICorner", miniLogo).CornerRadius = UDim.new(1, 0)
+
+-- Top bar
+local topbar = Instance.new("Frame")
+topbar.Size = UDim2.new(1, 0, 0, 40)
+topbar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+topbar.BorderSizePixel = 0
+topbar.Parent = frame
+Instance.new("UICorner", topbar).CornerRadius = UDim.new(0, 12)
+
+-- Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -100, 1, 0)
+title.Position = UDim2.new(0, 10, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "GAG SCRIPT LOADER 2.0"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = topbar
+
+-- Minimize Button
+local minBtn = Instance.new("TextButton")
+minBtn.Size = UDim2.new(0, 26, 0, 26)
+minBtn.Position = UDim2.new(1, -60, 0.5, -13)
+minBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+minBtn.BorderSizePixel = 0
+minBtn.Text = "-"
+minBtn.Font = Enum.Font.GothamBold
+minBtn.TextSize = 22
+minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minBtn.Parent = topbar
+Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 6)
+
+-- Exit Button
+local exitBtn = Instance.new("TextButton")
+exitBtn.Size = UDim2.new(0, 26, 0, 26)
+exitBtn.Position = UDim2.new(1, -30, 0.5, -13)
+exitBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+exitBtn.BorderSizePixel = 0
+exitBtn.Text = "X"
+exitBtn.Font = Enum.Font.GothamBold
+exitBtn.TextSize = 22
+exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+exitBtn.Parent = topbar
+Instance.new("UICorner", exitBtn).CornerRadius = UDim.new(0, 6)
+
+exitBtn.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
+
+-- Draggable
+local dragging, dragStart, startPos
+topbar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
+        end)
+    end
+end)
+topbar.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+                                   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+-- Minimize Logic
+local minimized = false
+minBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    frame.Visible = not minimized
+    miniLogo.Visible = minimized
+end)
+
+miniLogo.MouseButton1Click:Connect(function()
+    minimized = false
+    frame.Visible = true
+    miniLogo.Visible = false
+end)
+
+-- Button Maker
+local function createPanelButton(parent, posY, mainText, subText, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -20, 0, 50)
+    btn.Position = UDim2.new(0, 10, 0, posY)
+    btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    btn.BorderSizePixel = 0
+    btn.Text = ""
+    btn.Parent = parent
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -10, 0, 25)
+    label.Position = UDim2.new(0, 10, 0, 5)
+    label.BackgroundTransparency = 1
+    label.Text = mainText
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 16
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = btn
+
+    local sub = Instance.new("TextLabel")
+    sub.Size = UDim2.new(1, -10, 0, 20)
+    sub.Position = UDim2.new(0, 10, 0, 25)
+    sub.BackgroundTransparency = 1
+    sub.Text = subText
+    sub.TextColor3 = Color3.fromRGB(180, 180, 180)
+    sub.Font = Enum.Font.Gotham
+    sub.TextSize = 14
+    sub.TextXAlignment = Enum.TextXAlignment.Left
+    sub.Parent = btn
+
+    btn.MouseButton1Click:Connect(callback)
+    return btn
+end
+
+-- Script Buttons
+createPanelButton(frame, 50, "Run Project Reverse", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua", true))("discord.gg/csxu2nCkw9")
+end)
+
+createPanelButton(frame, 110, "Limit Hub Keyless", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua"))()
+end)
+
+createPanelButton(frame, 170, "Open Egg Detector", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
+end)
+
+createPanelButton(fra
+me, 230, "Run Pet Age Changer", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
+end)
