@@ -11,10 +11,10 @@ gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = game:GetService("CoreGui")
 
--- Main Frame
+-- Main Frame (taller for scrollable space)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 320, 0, 380) -- 🔹 fixed size for 8+ buttons
-frame.Position = UDim2.new(0.5, -160, 0.5, -190)
+frame.Size = UDim2.new(0, 360, 0, 460) -- 🔹 taller height so scroll line shows
+frame.Position = UDim2.new(0.5, -180, 0.5, -230)
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 0
@@ -125,15 +125,15 @@ miniLogo.MouseButton1Click:Connect(function()
     miniLogo.Visible = false
 end)
 
--- ✅ Scrollable Button Holder (fixed)
+-- ✅ Scrollable Button Holder (adjusted for new size)
 local scrollFrame = Instance.new("ScrollingFrame")
-scrollFrame.Size = UDim2.new(1, -10, 1, -50) -- below topbar
-scrollFrame.Position = UDim2.new(0, 5, 0, 45)
+scrollFrame.Size = UDim2.new(1, -10, 1, -60) -- fills under topbar
+scrollFrame.Position = UDim2.new(0, 5, 0, 50) -- start just below topbar
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.BorderSizePixel = 0
 scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollFrame.ScrollBarThickness = 6
-scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(180, 180, 180)
+scrollFrame.ScrollBarThickness = 8 -- thicker, easier to see
+scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 200, 200) -- brighter scrollbar
 scrollFrame.Parent = frame
 
 local layout = Instance.new("UIListLayout")
@@ -211,7 +211,6 @@ end)
 createPanelButton(scrollFrame, "Pet Age Changer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
 end)
-
 
 createPanelButton(scrollFrame, "Dark Spawner", "Click to Execute", function()
     local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
