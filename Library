@@ -1,247 +1,101 @@
 -- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
+-- GUI Styled like GAG Script Loader 2.0 (with small "D" logo toggle + Scrollable buttons)
 
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 
--- GUI setup
+-- Main GUI
 local gui = Instance.new("ScreenGui")
-gui.Name = "DyyPremiumGUI"
+gui.Name = "GAG_ScriptLoader"
 gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-gui.Parent = player:WaitForChild("PlayerGui")
+gui.Parent = game:GetService("CoreGui")
 
--- Main frame
+-- Main Frame (taller for scrollable space)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 220, 0, 226)
-frame.Position = UDim2.new(0.5, -110, 0.5, -113)
-frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-frame.BackgroundTransparency = 0.1
+frame.Size = UDim2.new(0, 360, 0, 460) -- 🔹 taller height so scroll line shows
+frame.Position = UDim2.new(0.5, -180, 0.5, -230)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 0
 frame.Parent = gui
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
--- Warning message at startup
-local warningLabel = Instance.new("TextLabel")
-warningLabel.Size = UDim2.new(1, 0, 0, 20)
-warningLabel.Position = UDim2.new(0, 0, 0, -24)
-warningLabel.BackgroundTransparency = 0.2
-warningLabel.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
-warningLabel.Text = "⚠GUI is still loading..."
-warningLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-warningLabel.Font = Enum.Font.GothamBold
-warningLabel.TextSize = 14
-warningLabel.Parent = frame
-Instance.new("UICorner", warningLabel).CornerRadius = UDim.new(0, 6)
+-- Stroke border
+local stroke = Instance.new("UIStroke")
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(200, 200, 200)
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+stroke.Parent = frame
 
--- Fade out warning after 5 seconds
-spawn(function()
-    wait(5)
-    TweenService:Create(warningLabel, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        TextTransparency = 1,
-        BackgroundTransparency = 1
-    }):Play()
-    wait(0.6)
-    warningLabel:Destroy()
-end)
+-- Mini Logo (toggle when minimized)
+local miniLogo = Instance.new("TextButton")
+miniLogo.Size = UDim2.new(0, 50, 0, 50)
+miniLogo.Position = UDim2.new(0, 20, 0.8, 0)
+miniLogo.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+miniLogo.BorderSizePixel = 0
+miniLogo.Text = "D"
+miniLogo.TextColor3 = Color3.fromRGB(255, 255, 255)
+miniLogo.Font = Enum.Font.GothamBold
+miniLogo.TextSize = 28
+miniLogo.Visible = false
+miniLogo.Parent = gui
+Instance.new("UICorner", miniLogo).CornerRadius = UDim.new(1, 0)
 
--- RGB glow border
-local glow = Instance.new("Frame")
-glow.Size = UDim2.new(1, 8, 1, 8)
-glow.Position = UDim2.new(0, -4, 0, -4)
-glow.BackgroundColor3 = Color3.fromHSV(0, 1, 1)
-glow.BorderSizePixel = 0
-glow.ZIndex = 0
-glow.Parent = frame
-Instance.new("UICorner", glow).CornerRadius = UDim.new(0, 16)
-
-spawn(function()
-    local hue = 0
-    while gui.Parent do
-        hue = (hue + 0.007) % 1
-        glow.BackgroundColor3 = Color3.fromHSV(hue, 1, 1)
-        wait(0.03)
-    end
-end)
+-- Topbar
+local topbar = Instance.new("Frame")
+topbar.Size = UDim2.new(1, 0, 0, 40)
+topbar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+topbar.BorderSizePixel = 0
+topbar.Parent = frame
+Instance.new("UICorner", topbar).CornerRadius = UDim.new(0, 12)
 
 -- Title
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -70, 0, 32)
-title.Position = UDim2.new(0, 10, 0, 10)
+title.Size = UDim2.new(1, -100, 1, 0)
+title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "Dyy Script"
+title.Text = "GAG SCRIPT LOADER 2.0"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.GothamBlack
-title.TextSize = 22
-title.TextStrokeTransparency = 0.6
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
 title.TextXAlignment = Enum.TextXAlignment.Left
-title.Parent = frame
+title.Parent = topbar
 
--- Footer
-local footer = Instance.new("TextLabel")
-footer.Size = UDim2.new(1, 0, 0, 16)
-footer.Position = UDim2.new(0, 0, 1, -20)
-footer.BackgroundTransparency = 1
-footer.Text = ""
-footer.TextColor3 = Color3.fromRGB(160, 160, 160)
-footer.Font = Enum.Font.Gotham
-footer.TextSize = 12
-footer.TextXAlignment = Enum.TextXAlignment.Center
-footer.Parent = frame
-
--- Tween helper
-local function TweenInOut(obj, goal, duration)
-    TweenService:Create(obj, TweenInfo.new(duration or 0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), goal):Play()
-end
-
--- Create button (reusable)
-local function createButton(parent, posY, text)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 26)
-    btn.Position = UDim2.new(0, 0, 0, posY)
-    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    btn.BorderSizePixel = 0
-    btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 15
-    btn.ZIndex = 1
-    btn.Parent = parent
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
-
-    btn.MouseEnter:Connect(function()
-        TweenInOut(btn, {BackgroundTransparency = 0.3}, 0.2)
-    end)
-    btn.MouseLeave:Connect(function()
-        TweenInOut(btn, {BackgroundTransparency = 0}, 0.2)
-    end)
-
-    return btn
-end
-
--- Button 1
-local button1 = createButton(frame, 50, "Run Project Reverse")
-button1.MouseButton1Click:Connect(function()
-    button1.Text = "Loading..."
-    button1.BackgroundTransparency = 0.5
-    local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua", true))("discord.gg/csxu2nCkw9")
-    end)
-    button1.Text = success and "Loaded!" or "Failed!"
-    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
-    wait(2)
-    button1.Text = "Run Project Reverse"
-    button1.BackgroundTransparency = 0
-end)
-
-
--- Button 2
-local button2 = createButton(frame, 82, "Limit Hub Keyless")
-button2.MouseButton1Click:Connect(function()
-    button2.Text = "Loading..."
-    button2.BackgroundTransparency = 0.5
-    local success, err = pcall(function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua'))()
-end)
-    button2.Text = success and "Loaded!" or "Failed!"
-    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
-    wait(2)
-    button2.Text = "Limit Hub Keyless"
-    button2.BackgroundTransparency = 0
-end)
-
-
--- Button 3
-local button3 = createButton(frame, 114, "Open Egg Detector")
-button3.MouseButton1Click:Connect(function()
-    button3.Text = "Loading..."
-    button3.BackgroundTransparency = 0.5
-    local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
-    end)
-    button3.Text = success and "Loaded!" or "Failed!"
-    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
-    wait(2)
-    button3.Text = "Open Egg Detector"
-    button3.BackgroundTransparency = 0
-end)
-
--- Button 4: Run Pet Age Changer
-local button4 = createButton(frame, 146, "Run Pet Age Changer")
-button4.MouseButton1Click:Connect(function()
-    button4.Text = "Loading..."
-    button4.BackgroundTransparency = 0.5
-    local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
-
-    end)
-    button4.Text = success and "Loaded!" or "Failed!"
-    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
-    wait(2)
-    button4.Text = "Run Pet Age Changer"
-    button4.BackgroundTransparency = 0
-end)
-
--- Minimize button
+-- Minimize Button
 local minBtn = Instance.new("TextButton")
-minBtn.Size = UDim2.new(0, 26, 0, 22)
-minBtn.Position = UDim2.new(1, -60, 0, 10)
-minBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+minBtn.Size = UDim2.new(0, 26, 0, 26)
+minBtn.Position = UDim2.new(1, -60, 0.5, -13)
+minBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 minBtn.BorderSizePixel = 0
-minBtn.Text = "–"
+minBtn.Text = "-"
 minBtn.Font = Enum.Font.GothamBold
 minBtn.TextSize = 22
 minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-minBtn.Parent = frame
+minBtn.Parent = topbar
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 6)
 
-minBtn.MouseEnter:Connect(function() TweenInOut(minBtn, {BackgroundTransparency = 0.3}, 0.2) end)
-minBtn.MouseLeave:Connect(function() TweenInOut(minBtn, {BackgroundTransparency = 0}, 0.2) end)
-
-local visible = true
-minBtn.MouseButton1Click:Connect(function()
-    visible = not visible
-    button1.Visible = visible
-    button2.Visible = visible
-    button3.Visible = visible
-    button4.Visible = visible
-    footer.Visible = visible
-    minBtn.Text = visible and "–" or "+"
-    frame.Size = visible and UDim2.new(0, 220, 0, 226) or UDim2.new(0, 220, 0, 45)
-end)
-
--- Exit button
+-- Exit Button
 local exitBtn = Instance.new("TextButton")
-exitBtn.Size = UDim2.new(0, 26, 0, 22)
-exitBtn.Position = UDim2.new(1, -30, 0, 10)
-exitBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+exitBtn.Size = UDim2.new(0, 26, 0, 26)
+exitBtn.Position = UDim2.new(1, -30, 0.5, -13)
+exitBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 exitBtn.BorderSizePixel = 0
-exitBtn.Text = "×"
+exitBtn.Text = "X"
 exitBtn.Font = Enum.Font.GothamBold
 exitBtn.TextSize = 22
 exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-exitBtn.Parent = frame
+exitBtn.Parent = topbar
 Instance.new("UICorner", exitBtn).CornerRadius = UDim.new(0, 6)
 
-exitBtn.MouseEnter:Connect(function() TweenInOut(exitBtn, {BackgroundTransparency = 0.3}, 0.2) end)
-exitBtn.MouseLeave:Connect(function() TweenInOut(exitBtn, {BackgroundTransparency = 0}, 0.2) end)
-exitBtn.MouseButton1Click:Connect(function() gui:Destroy() end)
+exitBtn.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
 
--- Draggable logic
-local dragging = false
-local dragStart, startPos
-
-frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+-- Draggable Frame
+local dragging, dragStart, startPos
+topbar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
         dragStart = input.Position
         startPos = frame.Position
@@ -250,22 +104,115 @@ frame.InputBegan:Connect(function(input)
         end)
     end
 end)
-
-frame.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+topbar.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
         local delta = input.Position - dragStart
         frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
                                    startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
 
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
+-- Minimize Logic
+local minimized = false
+minBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    frame.Visible = not minimized
+    miniLogo.Visible = minimized
+end)
+miniLogo.MouseButton1Click:Connect(function()
+    minimized = false
+    frame.Visible = true
+    miniLogo.Visible = false
+end)
+
+-- ✅ Scrollable Button Holder (adjusted for new size)
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, -10, 1, -60) -- fills under topbar
+scrollFrame.Position = UDim2.new(0, 5, 0, 50) -- start just below topbar
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.BorderSizePixel = 0
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollFrame.ScrollBarThickness = 8 -- thicker, easier to see
+scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 200, 200) -- brighter scrollbar
+scrollFrame.Parent = frame
+
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 10)
+layout.FillDirection = Enum.FillDirection.Vertical
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = scrollFrame
+
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+end)
+
+-- Button Maker
+local function createPanelButton(parent, mainText, subText, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -20, 0, 50)
+    btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    btn.BorderSizePixel = 0
+    btn.Text = ""
+    btn.Parent = parent
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -10, 0, 25)
+    label.Position = UDim2.new(0, 10, 0, 5)
+    label.BackgroundTransparency = 1
+    label.Text = mainText
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 16
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = btn
+
+    local sub = Instance.new("TextLabel")
+    sub.Size = UDim2.new(1, -10, 0, 20)
+    sub.Position = UDim2.new(0, 10, 0, 25)
+    sub.BackgroundTransparency = 1
+    sub.Text = subText
+    sub.TextColor3 = Color3.fromRGB(180, 180, 180)
+    sub.Font = Enum.Font.Gotham
+    sub.TextSize = 14
+    sub.TextXAlignment = Enum.TextXAlignment.Left
+    sub.Parent = btn
+
+    btn.MouseButton1Click:Connect(callback)
+    return btn
+end
+
+-- ✅ Script Buttons (auto-stack with scroll)
+createPanelButton(scrollFrame, "Project Reverse", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua", true))("discord.gg/csxu2nCkw9")
+end)
+
+createPanelButton(scrollFrame, "Limit Hub (Keyless)", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua"))()
+end)
+
+createPanelButton(scrollFrame, "SpeedhubX (Keyless)", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+end)
+
+createPanelButton(scrollFrame, "Zysume (Keyless)", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZusumeHub/ZusumeHub/refs/heads/main/UpdateZysume"))()
+end)
+
+createPanelButton(scrollFrame, "Egg Randomizer", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
+end)
+
+createPanelButton(scrollFrame, "Freeze Trade", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/FreezeTrade"))()
+end)
+
+createPanelButton(scrollFrame, "Pet Age Changer", "Click to Execute", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
+end)
+
+createPanelButton(scrollFrame, "Dark Spawner", "Click to Execute", function()
+    local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
+    Spawner.Load()
+end)
