@@ -1,5 +1,5 @@
 -- SKIDDED BY SIGMA @rizzify101
--- GUI Styled like GAG Script Loader 2.0 (with small "D" logo toggle)
+-- GUI Styled like GAG Script Loader 2.0 (with small "D" logo toggle + Scrollable buttons)
 
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
@@ -11,24 +11,24 @@ gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = game:GetService("CoreGui")
 
--- Main Frame (fit 7 buttons)
+-- Main Frame
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 320, 0, 420) -- more height
-frame.Position = UDim2.new(0.5, -160, 0.5, -210)
+frame.Size = UDim2.new(0, 320, 0, 360)
+frame.Position = UDim2.new(0.5, -150, 0.5, -180)
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 0
 frame.Parent = gui
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
--- Border
+-- Stroke border
 local stroke = Instance.new("UIStroke")
 stroke.Thickness = 2
 stroke.Color = Color3.fromRGB(200, 200, 200)
 stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 stroke.Parent = frame
 
--- Mini Logo (hidden until minimized)
+-- Mini Logo (toggle when minimized)
 local miniLogo = Instance.new("TextButton")
 miniLogo.Size = UDim2.new(0, 50, 0, 50)
 miniLogo.Position = UDim2.new(0, 20, 0.8, 0)
@@ -42,7 +42,7 @@ miniLogo.Visible = false
 miniLogo.Parent = gui
 Instance.new("UICorner", miniLogo).CornerRadius = UDim.new(1, 0)
 
--- Top Bar
+-- Topbar
 local topbar = Instance.new("Frame")
 topbar.Size = UDim2.new(1, 0, 0, 40)
 topbar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -92,7 +92,7 @@ exitBtn.MouseButton1Click:Connect(function()
     gui:Destroy()
 end)
 
--- Dragging
+-- Draggable Frame
 local dragging, dragStart, startPos
 topbar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -112,7 +112,7 @@ topbar.InputChanged:Connect(function(input)
     end
 end)
 
--- Minimize
+-- Minimize Logic
 local minimized = false
 minBtn.MouseButton1Click:Connect(function()
     minimized = not minimized
@@ -125,11 +125,31 @@ miniLogo.MouseButton1Click:Connect(function()
     miniLogo.Visible = false
 end)
 
+-- ✅ Scrollable Button Holder
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, -10, 1, -50) -- under topbar
+scrollFrame.Position = UDim2.new(0, 5, 0, 45)
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.BorderSizePixel = 0
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0) -- will auto expand
+scrollFrame.ScrollBarThickness = 6
+scrollFrame.Parent = frame
+
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 10)
+layout.FillDirection = Enum.FillDirection.Vertical
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = scrollFrame
+
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+end)
+
 -- Button Maker
-local function createPanelButton(parent, posY, mainText, subText, callback)
+local function createPanelButton(parent, mainText, subText, callback)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, -20, 0, 50)
-    btn.Position = UDim2.new(0, 10, 0, posY)
     btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     btn.BorderSizePixel = 0
     btn.Text = ""
@@ -162,32 +182,32 @@ local function createPanelButton(parent, posY, mainText, subText, callback)
     return btn
 end
 
--- Buttons (spaced 60px apart)
-createPanelButton(frame, 50, "Project Reverse", "Click to Execute", function()
+-- ✅ Script Buttons (now auto-stack with scrolling)
+createPanelButton(scrollFrame, "Project Reverse", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua", true))("discord.gg/csxu2nCkw9")
 end)
 
-createPanelButton(frame, 110, "Limit Hub (Keyless)", "Click to Execute", function()
+createPanelButton(scrollFrame, "Limit Hub (Keyless)", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua"))()
 end)
 
-createPanelButton(frame, 170, "SpeedhubX (Keyless)", "Click to Execute", function()
+createPanelButton(scrollFrame, "SpeedhubX (Keyless)", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
 end)
 
-createPanelButton(frame, 230, "Egg Randomizer", "Click to Execute", function()
+createPanelButton(scrollFrame, "Egg Randomizer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
 end)
 
-createPanelButton(frame, 290, "Freeze Trade", "Click to Execute", function()
+createPanelButton(scrollFrame, "Freeze Trade", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/FreezeTrade"))()
 end)
 
-createPanelButton(frame, 350, "Pet Age Changer", "Click to Execute", function()
+createPanelButton(scrollFrame, "Pet Age Changer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
 end)
 
-createPanelButton(frame, 410, "Dark Spawner", "Click to Execute", function()
+createPanelButton(scrollFrame, "Dark Spawner", "Click to Execute", function()
     local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
     Spawner.Load()
 end)
