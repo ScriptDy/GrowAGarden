@@ -180,3 +180,8 @@ end)
 createPanelButton(frame, 230, "Pet Age Changer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
 end)
+
+createPanelButton(frame, 290, "Pet Age Changer", "Click to Execute", function()
+    local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
+Spawner.Load()
+end)
