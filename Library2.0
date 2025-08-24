@@ -12,15 +12,15 @@ gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = player:WaitForChild("PlayerGui")
 
--- Main Frame (BIG FRAME)
+-- Main Frame (NORMAL SIZE)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 500, 0, 600) -- 🔹 Bigger frame
-frame.Position = UDim2.new(0.5, -250, 0.5, -300) -- Center
+frame.Size = UDim2.new(0, 300, 0, 380) -- back to normal size
+frame.Position = UDim2.new(0.5, -150, 0.5, -190) -- centered
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BackgroundTransparency = 0.25
 frame.BorderSizePixel = 0
 frame.Parent = gui
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 16)
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
 -- Topbar
 local topbar = Instance.new("Frame")
@@ -28,7 +28,7 @@ topbar.Size = UDim2.new(1, 0, 0, 40)
 topbar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 topbar.BorderSizePixel = 0
 topbar.Parent = frame
-Instance.new("UICorner", topbar).CornerRadius = UDim.new(0, 12)
+Instance.new("UICorner", topbar).CornerRadius = UDim.new(0, 10)
 
 -- Title
 local title = Instance.new("TextLabel")
@@ -49,7 +49,7 @@ scrollFrame.Position = UDim2.new(0, 7, 0, 45)
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.BorderSizePixel = 0
 scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollFrame.ScrollBarThickness = 8
+scrollFrame.ScrollBarThickness = 6
 scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(180, 180, 180)
 scrollFrame.Parent = frame
 
@@ -63,7 +63,7 @@ layout.Parent = scrollFrame
 
 -- Auto expand scroll size
 local function updateCanvas()
-    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 12)
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
 end
 layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
 
