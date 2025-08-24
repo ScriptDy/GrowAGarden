@@ -1,7 +1,8 @@
 -- SKIDDED BY SIGMA @rizzify101
--- GUI Styled like GAG Script Loader 2.0 (with small "D" logo toggle + Scrollable buttons)
+-- GUI Styled like GAG Script Loader 2.0 (with small image logo toggle)
 
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 
 -- Main GUI
@@ -9,38 +10,17 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "GAG_ScriptLoader"
 gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-gui.Parent = game:GetService("CoreGui")
+gui.Parent = player:WaitForChild("PlayerGui")
 
--- Main Frame
+-- Main Frame (BIG FRAME)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 360, 0, 420) -- 🔹 fixed size for 8+ buttons
-frame.Position = UDim2.new(0.5, -160, 0.5, -190)
+frame.Size = UDim2.new(0, 500, 0, 600) -- 🔹 Bigger frame
+frame.Position = UDim2.new(0.5, -250, 0.5, -300) -- Center
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-frame.BackgroundTransparency = 0.3
+frame.BackgroundTransparency = 0.25
 frame.BorderSizePixel = 0
 frame.Parent = gui
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
-
--- Stroke border
-local stroke = Instance.new("UIStroke")
-stroke.Thickness = 2
-stroke.Color = Color3.fromRGB(200, 200, 200)
-stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-stroke.Parent = frame
-
--- Mini Logo (toggle when minimized)
-local miniLogo = Instance.new("TextButton")
-miniLogo.Size = UDim2.new(0, 50, 0, 50)
-miniLogo.Position = UDim2.new(0, 20, 0.8, 0)
-miniLogo.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-miniLogo.BorderSizePixel = 0
-miniLogo.Text = "D"
-miniLogo.TextColor3 = Color3.fromRGB(255, 255, 255)
-miniLogo.Font = Enum.Font.GothamBold
-miniLogo.TextSize = 28
-miniLogo.Visible = false
-miniLogo.Parent = gui
-Instance.new("UICorner", miniLogo).CornerRadius = UDim.new(1, 0)
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 16)
 
 -- Topbar
 local topbar = Instance.new("Frame")
@@ -52,160 +32,83 @@ Instance.new("UICorner", topbar).CornerRadius = UDim.new(0, 12)
 
 -- Title
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -100, 1, 0)
+title.Size = UDim2.new(1, -10, 1, 0)
 title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "GAG SCRIPT LOADER 2.0"
+title.Text = "⚡ GAG Script Loader 2.0"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.GothamBold
 title.TextSize = 18
+title.Font = Enum.Font.GothamBold
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = topbar
 
--- Minimize Button
-local minBtn = Instance.new("TextButton")
-minBtn.Size = UDim2.new(0, 26, 0, 26)
-minBtn.Position = UDim2.new(1, -60, 0.5, -13)
-minBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-minBtn.BorderSizePixel = 0
-minBtn.Text = "-"
-minBtn.Font = Enum.Font.GothamBold
-minBtn.TextSize = 22
-minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-minBtn.Parent = topbar
-Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 6)
-
--- Exit Button
-local exitBtn = Instance.new("TextButton")
-exitBtn.Size = UDim2.new(0, 26, 0, 26)
-exitBtn.Position = UDim2.new(1, -30, 0.5, -13)
-exitBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-exitBtn.BorderSizePixel = 0
-exitBtn.Text = "X"
-exitBtn.Font = Enum.Font.GothamBold
-exitBtn.TextSize = 22
-exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-exitBtn.Parent = topbar
-Instance.new("UICorner", exitBtn).CornerRadius = UDim.new(0, 6)
-
-exitBtn.MouseButton1Click:Connect(function()
-    gui:Destroy()
-end)
-
--- Draggable Frame
-local dragging, dragStart, startPos
-topbar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = frame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then dragging = false end
-        end)
-    end
-end)
-topbar.InputChanged:Connect(function(input)
-    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = input.Position - dragStart
-        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-                                   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-
--- Minimize Logic
-local minimized = false
-minBtn.MouseButton1Click:Connect(function()
-    minimized = not minimized
-    frame.Visible = not minimized
-    miniLogo.Visible = minimized
-end)
-miniLogo.MouseButton1Click:Connect(function()
-    minimized = false
-    frame.Visible = true
-    miniLogo.Visible = false
-end)
-
--- ✅ Scrollable Button Holder (fixed)
+-- Scrollable Button Holder
 local scrollFrame = Instance.new("ScrollingFrame")
-scrollFrame.Size = UDim2.new(1, -10, 1, -50) -- below topbar
-scrollFrame.Position = UDim2.new(0, 5, 0, 45)
+scrollFrame.Size = UDim2.new(1, -14, 1, -50)
+scrollFrame.Position = UDim2.new(0, 7, 0, 45)
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.BorderSizePixel = 0
 scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollFrame.ScrollBarThickness = 6
+scrollFrame.ScrollBarThickness = 8
 scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(180, 180, 180)
 scrollFrame.Parent = frame
 
+-- Layout inside scroll
 local layout = Instance.new("UIListLayout")
-layout.Padding = UDim.new(0, 10)
+layout.Padding = UDim.new(0, 8)
 layout.FillDirection = Enum.FillDirection.Vertical
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 layout.SortOrder = Enum.SortOrder.LayoutOrder
 layout.Parent = scrollFrame
 
-layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
-end)
+-- Auto expand scroll size
+local function updateCanvas()
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 12)
+end
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
 
 -- Button Maker
-local function createPanelButton(parent, mainText, subText, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -20, 0, 50)
-    btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    btn.BorderSizePixel = 0
-    btn.Text = ""
-    btn.Parent = parent
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+local function createPanelButton(parent, text, desc, callback)
+    local buttonFrame = Instance.new("Frame")
+    buttonFrame.Size = UDim2.new(1, -20, 0, 60)
+    buttonFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    buttonFrame.Parent = parent
+    Instance.new("UICorner", buttonFrame).CornerRadius = UDim.new(0, 10)
 
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -10, 0, 25)
-    label.Position = UDim2.new(0, 10, 0, 5)
-    label.BackgroundTransparency = 1
-    label.Text = mainText
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Font = Enum.Font.GothamBold
-    label.TextSize = 16
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = btn
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 1, 0)
+    button.BackgroundTransparency = 1
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 16
+    button.Font = Enum.Font.GothamBold
+    button.Parent = buttonFrame
 
-    local sub = Instance.new("TextLabel")
-    sub.Size = UDim2.new(1, -10, 0, 20)
-    sub.Position = UDim2.new(0, 10, 0, 25)
-    sub.BackgroundTransparency = 1
-    sub.Text = subText
-    sub.TextColor3 = Color3.fromRGB(180, 180, 180)
-    sub.Font = Enum.Font.Gotham
-    sub.TextSize = 14
-    sub.TextXAlignment = Enum.TextXAlignment.Left
-    sub.Parent = btn
+    local description = Instance.new("TextLabel")
+    description.Size = UDim2.new(1, -10, 1, 0)
+    description.Position = UDim2.new(0, 5, 0, 25)
+    description.BackgroundTransparency = 1
+    description.Text = desc
+    description.TextColor3 = Color3.fromRGB(180, 180, 180)
+    description.TextSize = 12
+    description.Font = Enum.Font.Gotham
+    description.TextXAlignment = Enum.TextXAlignment.Left
+    description.Parent = buttonFrame
 
-    btn.MouseButton1Click:Connect(callback)
-    return btn
+    button.MouseButton1Click:Connect(callback)
 end
 
--- ✅ Script Buttons (auto-stack with scroll)
+-- Script Buttons
 createPanelButton(scrollFrame, "Project Reverse", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua", true))("discord.gg/csxu2nCkw9")
 end)
 
-createPanelButton(scrollFrame, "Limit Hub (Keyless)", "Click to Execute", function()
+createPanelButton(scrollFrame, "Limit Hub Keyless", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua"))()
-end)
-
-createPanelButton(scrollFrame, "SpeedhubX (Keyless)", "Click to Execute", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
-end)
-
-createPanelButton(scrollFrame, "Zysume (Keyless)", "Click to Execute", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/ZusumeHub/ZusumeHub/refs/heads/main/UpdateZysume"))()
 end)
 
 createPanelButton(scrollFrame, "Egg Randomizer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
-end)
-
-createPanelButton(scrollFrame, "Freeze Trade", "Click to Execute", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/FreezeTrade"))()
 end)
 
 createPanelButton(scrollFrame, "Pet Age Changer", "Click to Execute", function()
