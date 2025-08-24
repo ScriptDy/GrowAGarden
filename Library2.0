@@ -2,7 +2,6 @@
 -- GUI Styled like GAG Script Loader 2.0 (with small "D" logo toggle)
 
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 
 -- Main GUI
@@ -10,29 +9,29 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "GAG_ScriptLoader"
 gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-gui.Parent = game:GetService("CoreGui") -- ✅ CoreGui for executors
+gui.Parent = game:GetService("CoreGui")
 
--- Main Frame (FIXED for 5 buttons)
+-- Main Frame (fit 7 buttons)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 320, 0, 360) -- bigger height so all buttons fit
-frame.Position = UDim2.new(0.5, -150, 0.5, -180) -- recentered
+frame.Size = UDim2.new(0, 320, 0, 420) -- more height
+frame.Position = UDim2.new(0.5, -160, 0.5, -210)
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-frame.BackgroundTransparency = 0.3 -- ✅ Transparent background
+frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 0
 frame.Parent = gui
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
--- Light border around main frame
+-- Border
 local stroke = Instance.new("UIStroke")
-stroke.Thickness = 2 -- border width
-stroke.Color = Color3.fromRGB(200, 200, 200) -- light gray
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(200, 200, 200)
 stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 stroke.Parent = frame
 
--- Mini Logo (hidden until minimized, shows "D")
+-- Mini Logo (hidden until minimized)
 local miniLogo = Instance.new("TextButton")
 miniLogo.Size = UDim2.new(0, 50, 0, 50)
-miniLogo.Position = UDim2.new(0, 20, 0.8, 0) -- bottom-left
+miniLogo.Position = UDim2.new(0, 20, 0.8, 0)
 miniLogo.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 miniLogo.BorderSizePixel = 0
 miniLogo.Text = "D"
@@ -43,7 +42,7 @@ miniLogo.Visible = false
 miniLogo.Parent = gui
 Instance.new("UICorner", miniLogo).CornerRadius = UDim.new(1, 0)
 
--- Top bar
+-- Top Bar
 local topbar = Instance.new("Frame")
 topbar.Size = UDim2.new(1, 0, 0, 40)
 topbar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -93,7 +92,7 @@ exitBtn.MouseButton1Click:Connect(function()
     gui:Destroy()
 end)
 
--- Draggable
+-- Dragging
 local dragging, dragStart, startPos
 topbar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -113,14 +112,13 @@ topbar.InputChanged:Connect(function(input)
     end
 end)
 
--- Minimize Logic
+-- Minimize
 local minimized = false
 minBtn.MouseButton1Click:Connect(function()
     minimized = not minimized
     frame.Visible = not minimized
     miniLogo.Visible = minimized
 end)
-
 miniLogo.MouseButton1Click:Connect(function()
     minimized = false
     frame.Visible = true
@@ -164,7 +162,7 @@ local function createPanelButton(parent, posY, mainText, subText, callback)
     return btn
 end
 
--- Script Buttons (fixed positions)
+-- Buttons (spaced 60px apart)
 createPanelButton(frame, 50, "Project Reverse", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua", true))("discord.gg/csxu2nCkw9")
 end)
@@ -173,23 +171,23 @@ createPanelButton(frame, 110, "Limit Hub (Keyless)", "Click to Execute", functio
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua"))()
 end)
 
-createPanelButton(frame, 110, "SpeedhubX (Keyless)", "Click to Execute", function()
+createPanelButton(frame, 170, "SpeedhubX (Keyless)", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
 end)
 
-createPanelButton(frame, 170, "Egg Randomizer", "Click to Execute", function()
+createPanelButton(frame, 230, "Egg Randomizer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
 end)
 
-createPanelButton(frame, 170, "Egg Randomizer", "Click to Execute", function()
+createPanelButton(frame, 290, "Freeze Trade", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/FreezeTrade"))()
 end)
 
-createPanelButton(frame, 230, "Pet Age Changer", "Click to Execute", function()
+createPanelButton(frame, 350, "Pet Age Changer", "Click to Execute", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/AgePet"))()
 end)
 
-createPanelButton(frame, 290, "Dark Spawner", "Click to Execute", function()
+createPanelButton(frame, 410, "Dark Spawner", "Click to Execute", function()
     local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
     Spawner.Load()
 end)
