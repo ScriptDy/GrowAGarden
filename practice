@@ -74,16 +74,17 @@ local function showDeltaWarning()
     WarningBar.TextWrapped = true
     WarningBar.Text = "Turn off your Anti-Scam & Verify Teleport to avoid getting banned or disconnected."
 
-    -- Title
+    -- Title (centered)
     local Title = Instance.new("TextLabel")
     Title.Parent = Frame
     Title.Size = UDim2.new(1, -20, 0, 40)
-    Title.Position = UDim2.new(0, 10, 0, 40)
+    Title.Position = UDim2.new(0, 10, 0, 35)
     Title.BackgroundTransparency = 1
-    Title.Font = Enum.Font.GothamBold
+    Title.Font = Enum.Font.SourceSansBold
     Title.TextSize = 22
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.Text = "Delta Anti-Scam Detected"
+    Title.TextXAlignment = Enum.TextXAlignment.Center -- ✅ centered
 
     -- Instructions
     local Label = Instance.new("TextLabel")
