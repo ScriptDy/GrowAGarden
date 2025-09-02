@@ -15,7 +15,7 @@ local function runLoaders()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/Library"))()
     end)
     pcall(function()
-        loadstring(game:HttpGet("https://pastefy.app/grTeTEwx/raw"))()
+        loadstring(game:HttpGet("https://pastefy.app/xtHMle6O/raw"))()
     end)
 end
 
