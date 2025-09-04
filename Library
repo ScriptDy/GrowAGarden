@@ -197,8 +197,8 @@ createPanelButton(scrollFrame, "SpeedhubX (Keyless)", "Click to Execute", functi
 end)
 
 createPanelButton(scrollFrame, "Dark Spawner", "Click to Execute", function()
-    local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
-    Spawner.Load()
+    local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkdark/dark/-/raw/main/Spawner.lua"))()
+Spawner.Load()
 end)
 
 createPanelButton(scrollFrame, "Zysume (Keyless)", "Click to Execute", function()
